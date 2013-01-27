@@ -10,8 +10,18 @@ The code has been used in several popular video games including THQ's "Company o
 
 It has also used in many University assignments and projects.
 
-Description
-===========
+Installing
+==========
+
+Build in place using:
+
+    g++ findpath.cpp -o findpath
+    
+    g++ 8puzzle.cpp -o 8puzzle
+
+
+Introduction
+============
 
 This implementation is intended to be simple to read yet fairly
 efficient. To build it you can compile, with any recent C++ compiler,
