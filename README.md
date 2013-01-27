@@ -82,16 +82,16 @@ If anyone knows what the breaking change to the compiler was for, let me know.
 Updated 6th September 2005
 --------------------------
 
-	Finally set the path to fsa.h correctly, sorry about that.
-	8puzzle.cpp now defaults to using a demo puzzle that solves in a short time.
-	Added typename keyword to comply with latest ISO standards. 
+Finally set the path to fsa.h correctly, sorry about that.
+8puzzle.cpp now defaults to using a demo puzzle that solves in a short time.
+Added typename keyword to comply with latest ISO standards. 
 
 Updated November 26th 2001
 --------------------------
 
-	Fixed a bug. When a node is deleted from the Open list I did sort_heap when make_heap
-	is needed to keep the heap structure valid. This causes the search to go awry under some
-	conditions. Thanks to Mike Ryynanen for tracking this down.
+Fixed a bug. When a node is deleted from the Open list I did sort_heap when make_heap
+is needed to keep the heap structure valid. This causes the search to go awry under some
+conditions. Thanks to Mike Ryynanen for tracking this down.
 
 justinhj@gmail.com
 
@@ -101,18 +101,18 @@ Permission is given by the author to freely redistribute and
 include this code in any program as long as this credit is 
 given where due.
  
-  COVERED CODE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS, 
-  WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
-  INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE COVERED CODE 
-  IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE
-  OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY AND 
-  PERFORMANCE OF THE COVERED CODE IS WITH YOU. SHOULD ANY COVERED 
-  CODE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL 
-  DEVELOPER OR ANY OTHER CONTRIBUTOR) ASSUME THE COST OF ANY 
-  NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF 
-  WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE 
-  OF ANY COVERED CODE IS AUTHORIZED HEREUNDER EXCEPT UNDER
-  THIS DISCLAIMER.
+COVERED CODE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS, 
+WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
+INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE COVERED CODE 
+IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE
+OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY AND 
+PERFORMANCE OF THE COVERED CODE IS WITH YOU. SHOULD ANY COVERED 
+CODE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL 
+DEVELOPER OR ANY OTHER CONTRIBUTOR) ASSUME THE COST OF ANY 
+NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF 
+WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE 
+OF ANY COVERED CODE IS AUTHORIZED HEREUNDER EXCEPT UNDER
+THIS DISCLAIMER.
  
 
 
