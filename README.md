@@ -19,27 +19,26 @@ the following files :
 
 For 8-puzzle solver
 
-	8puzzle.cpp
-	stlastar.h
-	optionally fsa.h
+* 8puzzle.cpp
+* stlastar.h
+* optionally fsa.h
 
 Command line 
 
-	8puzzle with no arguments runs with one of the boards in the cpp file, you can
-	select the one you want changing the conditional compiliation instructions. Or if you
-	prefer pass in a board on the command line using digits for the tile positions, where
-	zero is the space. The board runs from left to right, each row at a time:
+8puzzle with no arguments runs with one of the boards in the cpp file, you can
+select the one you want changing the conditional compiliation instructions. Or if you
+prefer pass in a board on the command line using digits for the tile positions, where
+zero is the space. The board runs from left to right, each row at a time:
 	
-		8puzzle 013824765
+    8puzzle 013824765
 
 For path finder 
+* findpath.cpp
+* stlastar.h
+* optionally fsa.h
 
-	findpath.cpp
-	stlastar.h
-	optionally fsa.h
-
-	pathfind has no arguments. You can edit the simple map in pathfind.cpp and the start 
-	and goal co-ordinates to experiement with the pathfinder.
+pathfind has no arguments. You can edit the simple map in pathfind.cpp and the start 
+and goal co-ordinates to experiement with the pathfinder.
 
 Fixed size allocator notes: As mentioned briefly in the tutorial you can enable and disable the
 faster memory allocation. This allocates a fixed size block of memory, so you have to specify this size
