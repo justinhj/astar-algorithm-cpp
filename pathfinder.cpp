@@ -1,11 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// STL A* Search implementation
-// (C)2001 Justin Heyes-Jones
 //
-// Finding a path on a simple grid maze
-// This shows how to do shortest path finding using A*
-
+// A* Search implementation
+// (C)2013 Justin Heyes-Jones
+//
+// This is an A* pathfinding lib with a C wrapper
+//
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stlastar.h" // See header for copyright and usage information
@@ -26,7 +25,7 @@ const int MAP_WIDTH = 20;
 const int MAP_HEIGHT = 20;
 
 
-int map[ MAP_WIDTH * MAP_HEIGHT ] = 
+static int s_demo_map[ MAP_WIDTH * MAP_HEIGHT ] =
 {
 
 // 0001020304050607080910111213141516171819
@@ -67,7 +66,7 @@ int GetMap( int x, int y )
 		return 9;	 
 	}
 
-	return map[(y*MAP_WIDTH)+x];
+	return s_demo_map[(y*MAP_WIDTH)+x];
 }
 
 
@@ -119,7 +118,7 @@ void MapSearchNode::PrintNodeInfo()
 }
 
 // Here's the heuristic function that estimates the distance from a Node
-// to the Goal. 
+// to the Goal using Manhattan distance
 
 float MapSearchNode::GoalDistanceEstimate( MapSearchNode &nodeGoal )
 {
@@ -209,10 +208,9 @@ float MapSearchNode::GetCost( MapSearchNode &successor )
 
 }
 
+// C wrappers
 
-// Main
-
-int main( int argc, char *argv[] )
+extern "C" int demo()
 {
 
 	cout << "STL A* Search implementation\n(C)2001 Justin Heyes-Jones\n";
