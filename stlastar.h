@@ -23,6 +23,8 @@ given where due.
 
 */
 
+#ifndef STLASTAR_H
+#define STLASTAR_H
 // used for text debugging
 #include <iostream>
 #include <stdio.h>
@@ -111,7 +113,18 @@ public: // methods
 
 
 	// constructor just initialises private data
-	AStarSearch( int MaxNodes = 1000 ) :
+	AStarSearch() :
+		m_AllocateNodeCount(0),
+#if USE_FSA_MEMORY
+		m_FixedSizeAllocator( 1000 ),
+#endif
+		m_State( SEARCH_STATE_NOT_INITIALISED ),
+		m_CurrentSolutionNode( NULL ),
+		m_CancelRequest( false )
+	{
+	}
+
+	AStarSearch( int MaxNodes ) :
 		m_AllocateNodeCount(0),
 #if USE_FSA_MEMORY
 		m_FixedSizeAllocator( MaxNodes ),
@@ -749,6 +762,6 @@ private: // data
 
 };
 
-
+#endif
 
    
