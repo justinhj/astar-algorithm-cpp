@@ -1,4 +1,4 @@
-Copyright (c) 2006 Justin Heyes-Jones
+Copyright (C) 2001-2013 Justin Heyes-Jones
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"), 
