@@ -10,6 +10,11 @@ The code has been used in several popular video games including THQ's "Company o
 
 It has also used in many University assignments and projects.
 
+Commercial Use
+==============
+
+This software has been used in several widely distributed video games, as well as industrial and academic projects. Should you decide to ship this code in a commercial endevour I ask that you contact me just to let me know. I would also greatly appreciate it if you could contribute to Unicef, a charity which helps children worldwide. http://www.unicef.org/
+
 Installing
 ==========
 
