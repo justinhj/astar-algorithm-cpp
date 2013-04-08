@@ -10,10 +10,23 @@ The code has been used in several popular video games including THQ's "Company o
 
 It has also used in many University assignments and projects.
 
+License
+=======
+
+This software is released under the MIT License, see license.txt
+
 Commercial Use
 ==============
 
-This software has been used in several widely distributed video games, as well as industrial and academic projects. Should you decide to ship this code in a commercial endevour I ask that you contact me just to let me know. I would also greatly appreciate it if you could contribute to Unicef, a charity which helps children worldwide. http://www.unicef.org/
+This software has been used in several widely distributed video games, as well as industrial and academic projects. Should you decide to ship this code in a commercial product, or wish to show your appreciation, I ask that you contact me just to let me know. I would also greatly appreciate it if you could contribute to Unicef, a charity which helps children worldwide. http://www.unicef.org/
+
+If you wish to be added to the list of known products using the code please contact me.
+
+Using this code:
+
+* Gun, Activision
+* Company of Heroes and Company of Heroes Online, Relic Entertainment
+* Angel Engine, a game prototyping engine http://code.google.com/p/angel-engine/
 
 Installing
 ==========
@@ -108,26 +121,6 @@ Fixed a bug. When a node is deleted from the Open list I did sort_heap when make
 is needed to keep the heap structure valid. This causes the search to go awry under some
 conditions. Thanks to Mike Ryynanen for tracking this down.
 
-justinhj@gmail.com
-
-Copyright (C) 2001-2013 Justin Heyes-Jones
-
-Permission is given by the author to freely redistribute and 
-include this code in any program as long as this credit is 
-given where due.
- 
-COVERED CODE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS, 
-WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
-INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE COVERED CODE 
-IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE
-OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY AND 
-PERFORMANCE OF THE COVERED CODE IS WITH YOU. SHOULD ANY COVERED 
-CODE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL 
-DEVELOPER OR ANY OTHER CONTRIBUTOR) ASSUME THE COST OF ANY 
-NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF 
-WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE 
-OF ANY COVERED CODE IS AUTHORIZED HEREUNDER EXCEPT UNDER
-THIS DISCLAIMER.
  
 
 
