@@ -717,6 +717,7 @@ private: // methods
 #if !USE_FSA_MEMORY
 		delete node;
 #else
+		node->~Node();
 		m_FixedSizeAllocator.free( node );
 #endif
 	}
