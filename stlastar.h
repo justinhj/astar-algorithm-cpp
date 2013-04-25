@@ -214,6 +214,7 @@ public: // methods
 			// The user is going to use the Goal Node he passed in 
 			// so copy the parent pointer of n 
 			m_Goal->parent = n->parent;
+			m_Goal->g = n->g;
 
 			// A special case is that the goal was passed in as the start state
 			// so handle that here
@@ -511,6 +512,20 @@ public: // methods
 		}
 
 		return NULL;
+	}
+
+	// Get final cost of solution
+	// Returns FLT_MAX if goal is not defined or there is no solution
+	float GetSolutionCost()
+	{
+		if( m_Goal && m_State == SEARCH_STATE_SUCCEEDED )
+		{
+			return m_Goal->g;
+		}
+		else
+		{
+			return FLT_MAX;
+		}
 	}
 
 	// For educational use and debugging it is useful to be able to view
