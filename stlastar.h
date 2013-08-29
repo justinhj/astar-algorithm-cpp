@@ -56,10 +56,6 @@ template <class T> class AStarState;
 template <class UserState> class AStarSearch
 {
 
-#if (defined(__cplusplus) && __cplusplus > 199711L) || (defined(_MSC_VER) && _MSC_VER >= 1600)
-	static_assert(is_base_of<AStarState<UserState>, UserState>::value, "UserState must be derived from AStarState!");
-#endif
-
 public: // data
 
 	enum
