@@ -76,11 +76,11 @@ int GetMap( int x, int y )
 class MapSearchNode
 {
 public:
-	unsigned int x;	 // the (x,y) positions of the node
-	unsigned int y;	
+	int x;	 // the (x,y) positions of the node
+	int y;	
 	
 	MapSearchNode() { x = y = 0; }
-	MapSearchNode( unsigned int px, unsigned int py ) { x=px; y=py; }
+	MapSearchNode( int px, int py ) { x=px; y=py; }
 
 	float GoalDistanceEstimate( MapSearchNode &nodeGoal );
 	bool IsGoal( MapSearchNode &nodeGoal );
