@@ -28,10 +28,10 @@ Using this code:
 * Company of Heroes and Company of Heroes Online, Relic Entertainment
 * Angel Engine, a game prototyping engine http://code.google.com/p/angel-engine/
 
-Installing
-==========
+Compilation
+===========
 
-Build in place using:
+Build via GCC like so:
 
     g++ findpath.cpp -o findpath
     
@@ -79,68 +79,12 @@ Microsoft Visual C++ : Confirmed working with version 8.0.50727 with some deprec
 I'm going to leave the deprecation warnings in so that it still works cleanly with GCC. 
 TODO Make a non-deprecated compliant version using compiler checking
 
-GCC notes : Compiled using version 3.4.4 
+GCC notes : Compiled using version 4.2.1
 
 Please let me know if it doesn't work for you and I will try to help. I cannot help if you are using
 an old compiler such as Turbo C++, since I update the code to meet Ansi Standard C++ as required.
 
-At least in as far as the Microsoft and GCC compilers adhere to Ansi and add breaking changes.
 
-History:
+Cheers!
 
-Updated 3rd August 2006
------------------------
-
-Fixed memory leak
-Fixed special case handling for finding better path to a closed node
-Fixed bug with comparing the start node with a new node by pointer instead of value
-Changed code to use Manhattan distance heuristic with pathfind.cpp as it is more correct
-
-
-Updated 27th September 2005
----------------------------
-
-Thanks to Gyan singh for pointing out the code no longer compiles under GCC.
-
-Well, that was the case. I've removed a Gnu offending conio.h include, and added lots more typename
-keywords, which seem to be required now when making an iterator using a template type.
-
-If anyone knows what the breaking change to the compiler was for, let me know.
-
-Updated 6th September 2005
---------------------------
-
-Finally set the path to fsa.h correctly, sorry about that.
-8puzzle.cpp now defaults to using a demo puzzle that solves in a short time.
-Added typename keyword to comply with latest ISO standards. 
-
-Updated November 26th 2001
---------------------------
-
-Fixed a bug. When a node is deleted from the Open list I did sort_heap when make_heap
-is needed to keep the heap structure valid. This causes the search to go awry under some
-conditions. Thanks to Mike Ryynanen for tracking this down.
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Justin
