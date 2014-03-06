@@ -71,8 +71,8 @@ public:
 
 public: // methods
 	FixedSizeAllocator( unsigned int MaxElements = FSA_DEFAULT_SIZE ) :
-	m_MaxElements( MaxElements ),
-	m_pFirstUsed( NULL )
+	m_pFirstUsed( NULL ),
+	m_MaxElements( MaxElements )
 	{
 		// Allocate enough memory for the maximum number of elements
 
