@@ -4,9 +4,11 @@ astar-algorithm-cpp
 Summary
 -------
 
-This code is an efficient implementation in C++ of the A* algorithm. It accompanies the A* tutorial on this site: http://www.heyes-jones.com/astar.html
+This code is an efficient implementation in C++ and C# of the A* algorithm. It accompanies the A* tutorial on this site: http://www.heyes-jones.com/astar.html
 
-The code has been used in several popular video games including THQ's "Company of Heroes", Activision's "Gun" as well as in the popular game prototyping engine Angel. http://code.google.com/p/angel-engine/
+Thank you @ScaryG for the C# port. This should work on Unity as well as the .net or mono platforms. 
+
+The CPP code has been used in several popular video games including THQ's "Company of Heroes", Activision's "Gun" as well as in the popular game prototyping engine Angel. http://code.google.com/p/angel-engine/
 
 It has also used in many University assignments and projects.
 
