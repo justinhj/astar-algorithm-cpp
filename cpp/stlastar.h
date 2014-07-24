@@ -48,7 +48,9 @@ using namespace std;
 
 // disable warning that debugging information has lines that are truncated
 // occurs in stl headers
+#if defined(WIN32) && defined(_WINDOWS)
 #pragma warning( disable : 4786 )
+#endif
 
 template <class T> class AStarState;
 
@@ -117,23 +119,23 @@ public: // methods
 
 	// constructor just initialises private data
 	AStarSearch() :
-		m_AllocateNodeCount(0),
+		m_State( SEARCH_STATE_NOT_INITIALISED ),
+		m_CurrentSolutionNode( NULL ),
 #if USE_FSA_MEMORY
 		m_FixedSizeAllocator( 1000 ),
 #endif
-		m_State( SEARCH_STATE_NOT_INITIALISED ),
-		m_CurrentSolutionNode( NULL ),
+		m_AllocateNodeCount(0),
 		m_CancelRequest( false )
 	{
 	}
 
 	AStarSearch( int MaxNodes ) :
-		m_AllocateNodeCount(0),
+		m_State( SEARCH_STATE_NOT_INITIALISED ),
+		m_CurrentSolutionNode( NULL ),
 #if USE_FSA_MEMORY
 		m_FixedSizeAllocator( MaxNodes ),
 #endif
-		m_State( SEARCH_STATE_NOT_INITIALISED ),
-		m_CurrentSolutionNode( NULL ),
+		m_AllocateNodeCount(0),
 		m_CancelRequest( false )
 	{
 	}
