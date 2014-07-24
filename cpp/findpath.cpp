@@ -56,8 +56,6 @@ int world_map[ MAP_WIDTH * MAP_HEIGHT ] =
 
 int GetMap( int x, int y )
 {
-	int unused = 2;
-
 	if( x < 0 ||
 	    x >= MAP_WIDTH ||
 		 y < 0 ||
