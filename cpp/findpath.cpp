@@ -25,7 +25,7 @@ using namespace std;
 const int MAP_WIDTH = 20;
 const int MAP_HEIGHT = 20;
 
-int map[ MAP_WIDTH * MAP_HEIGHT ] = 
+int world_map[ MAP_WIDTH * MAP_HEIGHT ] = 
 {
 
 // 0001020304050607080910111213141516171819
@@ -66,7 +66,7 @@ int GetMap( int x, int y )
 		return 9;	 
 	}
 
-	return map[(y*MAP_WIDTH)+x];
+	return world_map[(y*MAP_WIDTH)+x];
 }
 
 

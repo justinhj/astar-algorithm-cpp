@@ -613,16 +613,12 @@ int main( int argc, char *argv[] )
 
 	cout << "STL A* 8-puzzle solver implementation\n(C)2001 Justin Heyes-Jones\n";
 
-	bool bUserBoard = false;
-
 	if( argc > 1 )
 	{
-		char *userboard = argv[1];
-
 		int i = 0;
 		int c;
 
-		while( c = argv[1][i] )
+		while( (c = argv[1][i]) )
 		{
 			if( isdigit( c ) )
 			{
