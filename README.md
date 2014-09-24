@@ -8,6 +8,8 @@ This code is an efficient implementation in C++ and C# of the A* algorithm. It a
 
 Thank you @ScaryG for the C# port. This should work on Unity as well as the .net or mono platforms. 
 
+Thank you to Rasoul for submitting the path to Bucharest sample
+
 The CPP code has been used in several popular video games including THQ's "Company of Heroes", Activision's "Gun" as well as in the popular game prototyping engine Angel. http://code.google.com/p/angel-engine/
 
 It has also used in many University assignments and projects.
@@ -33,12 +35,7 @@ Using this code:
 Compilation
 ===========
 
-Build via GCC like so:
-
-    g++ findpath.cpp -o findpath
-    
-    g++ 8puzzle.cpp -o 8puzzle
-
+Enter the cpp folder and run make
 
 Introduction
 ============
@@ -81,7 +78,8 @@ Microsoft Visual C++ : Confirmed working with version 8.0.50727 with some deprec
 I'm going to leave the deprecation warnings in so that it still works cleanly with GCC. 
 TODO Make a non-deprecated compliant version using compiler checking
 
-GCC notes : Compiled using version 4.2.1
+Compiled with:
+Apple LLVM version 6.0 (clang-600.0.51) (based on LLVM 3.5svn)
 
 Please let me know if it doesn't work for you and I will try to help. I cannot help if you are using
 an old compiler such as Turbo C++, since I update the code to meet Ansi Standard C++ as required.
