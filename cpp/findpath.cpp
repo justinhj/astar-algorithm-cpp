@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <math.h>
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0
@@ -121,11 +122,7 @@ void MapSearchNode::PrintNodeInfo()
 
 float MapSearchNode::GoalDistanceEstimate( MapSearchNode &nodeGoal )
 {
-	float xd = float( ( (float)x - (float)nodeGoal.x ) );
-	float yd = float( ( (float)y - (float)nodeGoal.y) );
-
-	return xd + yd;
-
+	return fabsf(x - nodeGoal.x) + fabsf(y - nodeGoal.y);	
 }
 
 bool MapSearchNode::IsGoal( MapSearchNode &nodeGoal )
