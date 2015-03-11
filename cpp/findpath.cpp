@@ -73,7 +73,7 @@ int GetMap( int x, int y )
 
 // Definitions
 
-class MapSearchNode : public AStarState
+class MapSearchNode
 {
 public:
 	int x;	 // the (x,y) positions of the node
@@ -82,13 +82,13 @@ public:
 	MapSearchNode() { x = y = 0; }
 	MapSearchNode( int px, int py ) { x=px; y=py; }
 
-	virtual float GoalDistanceEstimate( MapSearchNode &nodeGoal );
-	virtual bool IsGoal( MapSearchNode &nodeGoal );
-	virtual bool GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapSearchNode *parent_node );
-	virtual float GetCost( MapSearchNode &successor );
-	virtual bool IsSameState( MapSearchNode &rhs );
+	float GoalDistanceEstimate( MapSearchNode &nodeGoal );
+	bool IsGoal( MapSearchNode &nodeGoal );
+	bool GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapSearchNode *parent_node );
+	float GetCost( MapSearchNode &successor );
+	bool IsSameState( MapSearchNode &rhs );
 
-	virtual void PrintNodeInfo(); 
+	void PrintNodeInfo(); 
 };
 
 bool MapSearchNode::IsSameState( MapSearchNode &rhs )
