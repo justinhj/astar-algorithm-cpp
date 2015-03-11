@@ -73,7 +73,7 @@ int GetMap( int x, int y )
 
 // Definitions
 
-class MapSearchNode
+class MapSearchNode : public AStarState
 {
 public:
 	int x;	 // the (x,y) positions of the node
@@ -82,31 +82,20 @@ public:
 	MapSearchNode() { x = y = 0; }
 	MapSearchNode( int px, int py ) { x=px; y=py; }
 
-	float GoalDistanceEstimate( MapSearchNode &nodeGoal );
-	bool IsGoal( MapSearchNode &nodeGoal );
-	bool GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapSearchNode *parent_node );
-	float GetCost( MapSearchNode &successor );
-	bool IsSameState( MapSearchNode &rhs );
+	virtual float GoalDistanceEstimate( MapSearchNode &nodeGoal );
+	virtual bool IsGoal( MapSearchNode &nodeGoal );
+	virtual bool GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapSearchNode *parent_node );
+	virtual float GetCost( MapSearchNode &successor );
+	virtual bool IsSameState( MapSearchNode &rhs );
 
-	void PrintNodeInfo(); 
-
-
+	virtual void PrintNodeInfo(); 
 };
 
 bool MapSearchNode::IsSameState( MapSearchNode &rhs )
 {
-
 	// same state in a maze search is simply when (x,y) are the same
-	if( (x == rhs.x) &&
-		(y == rhs.y) )
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
+	return (x == rhs.x) &&
+		(y == rhs.y);
 }
 
 void MapSearchNode::PrintNodeInfo()
@@ -127,14 +116,8 @@ float MapSearchNode::GoalDistanceEstimate( MapSearchNode &nodeGoal )
 
 bool MapSearchNode::IsGoal( MapSearchNode &nodeGoal )
 {
-
-	if( (x == nodeGoal.x) &&
-		(y == nodeGoal.y) )
-	{
-		return true;
-	}
-
-	return false;
+	return (x == nodeGoal.x) &&
+		(y == nodeGoal.y);
 }
 
 // This generates the successors to the given Node. It uses a helper function called
@@ -143,7 +126,6 @@ bool MapSearchNode::IsGoal( MapSearchNode &nodeGoal )
 // is specific to the application
 bool MapSearchNode::GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapSearchNode *parent_node )
 {
-
 	int parent_x = -1; 
 	int parent_y = -1; 
 
@@ -157,40 +139,24 @@ bool MapSearchNode::GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapS
 	MapSearchNode NewNode;
 
 	// push each possible move except allowing the search to go backwards
-
-	if( (GetMap( x-1, y ) < 9) 
-		&& !((parent_x == x-1) && (parent_y == y))
-	  ) 
+	
+	for(int i = -1; i < 2; ++i)
 	{
-		NewNode = MapSearchNode( x-1, y );
-		astarsearch->AddSuccessor( NewNode );
-	}	
-
-	if( (GetMap( x, y-1 ) < 9) 
-		&& !((parent_x == x) && (parent_y == y-1))
-	  ) 
-	{
-		NewNode = MapSearchNode( x, y-1 );
-		astarsearch->AddSuccessor( NewNode );
-	}	
-
-	if( (GetMap( x+1, y ) < 9)
-		&& !((parent_x == x+1) && (parent_y == y))
-	  ) 
-	{
-		NewNode = MapSearchNode( x+1, y );
-		astarsearch->AddSuccessor( NewNode );
-	}	
-
-		
-	if( (GetMap( x, y+1 ) < 9) 
-		&& !((parent_x == x) && (parent_y == y+1))
-		)
-	{
-		NewNode = MapSearchNode( x, y+1 );
-		astarsearch->AddSuccessor( NewNode );
-	}	
-
+		for(int j = -1; j < 2; ++j)
+		{
+			// Ignores x + 0 and y + 0 together
+			if(i == 0 && j == 0)
+				continue;
+				
+			if( (GetMap( x + i, y + j ) < 9) 
+				&& !((parent_x == x + i) && (parent_y == y + j))
+			  ) 
+			{
+				NewNode = MapSearchNode( x + i, y + j );
+				astarsearch->AddSuccessor( NewNode );
+			}
+		}
+	}
 	return true;
 }
 
@@ -201,7 +167,6 @@ bool MapSearchNode::GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapS
 float MapSearchNode::GetCost( MapSearchNode &successor )
 {
 	return (float) GetMap( x, y );
-
 }
 
 
