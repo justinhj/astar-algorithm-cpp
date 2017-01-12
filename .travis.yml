@@ -3,5 +3,9 @@ compiler:
   - g++
   - clang
 
-script: cd cpp; make
+script:
+  cd cpp
+  make
+  make test
+
 
