@@ -1,6 +1,8 @@
 astar-algorithm-cpp
 ===================
 
+[![Build Status](https://travis-ci.org/justinhj/astar-algorithm-cpp.svg?branch=master)](https://travis-ci.org/justinhj/astar-algorithm-cpp)
+
 Summary
 -------
 
