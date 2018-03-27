@@ -6,13 +6,15 @@ astar-algorithm-cpp
 Summary
 -------
 
-This code is an efficient implementation in C++ and C# of the A* algorithm. It accompanies the A* tutorial on this site: http://www.heyes-jones.com/astar.html
+This code is an efficient implementation in C++ and C# of the A* algorithm, designed to be used from high performance realtime applications (video games) and with an optional fast memory allocation scheme.   
 
-Thank you @ScaryG for the C# port. This should work on Unity as well as the .net or mono platforms. 
+It accompanies this A* tutorial: http://www.heyes-jones.com/astar.html
 
-Thank you to Rasoul for submitting the path to Bucharest sample
+Thank you @ScaryG for the C# port. This addition should work on Unity as well as the .net/mono platforms. 
 
-The CPP code has been used in several popular video games including THQ's "Company of Heroes", Activision's "Gun" as well as in the popular game prototyping engine Angel. http://code.google.com/p/angel-engine/
+Thank you to @Rasoul for submitting the path to Bucharest sample
+
+The CPP code has been used in several popular video games including THQ's "Company of Heroes", Activision's "Gun", "War of Sonria" by PlaygroundSquad as well as in the popular game prototyping engine Angel. http://code.google.com/p/angel-engine/
 
 It has also used in many University assignments and projects.
 
@@ -24,7 +26,9 @@ This software is released under the MIT License, see license.txt
 Commercial Use
 ==============
 
-This software has been used in several widely distributed video games, as well as industrial and academic projects. Should you decide to ship this code in a commercial product, or wish to show your appreciation, I ask that you contact me just to let me know. I would also greatly appreciate it if you could contribute to Unicef, a charity which helps children worldwide. http://www.unicef.org/
+This software has been used in AAA video games and is well tested in the wild. Please let me know if you use this code in you games, studies or hobby projects. 
+
+If you feel the need to pay money for this code, it is not required by the license, but you could contribute to Unicef, a charity which helps children worldwide,  http://www.unicef.org/ that would be awesome.
 
 If you wish to be added to the list of known products using the code please contact me.
 
@@ -33,6 +37,7 @@ Using this code:
 * Gun, Activision
 * Company of Heroes and Company of Heroes Online, Relic Entertainment
 * Angel Engine, a game prototyping engine http://code.google.com/p/angel-engine/
+* War of Sonria, a strategy war game on PSP and Playstation 3 by Playground Squad
 
 Compilation
 ===========
