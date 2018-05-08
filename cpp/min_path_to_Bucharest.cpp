@@ -8,8 +8,14 @@
 //        Example:
 //                min_path_to_Bucharest Arad
 //
-// Rasoul Mojtahedzadeh
+// Thanks to Rasoul  Mojtahedzadeh for this contribution
 // Mojtahedzadeh _atsign_ gmail com
+// 
+// Please note that this exercise is academic in nature and that the distances between the cities may not be
+// correct compared to the latitude and longnitude differences in real life. Thanks to parthi2929 for noticing 
+// this issue. In a real application you would use some kind of exact x,y position of each city in order to get 
+// accurate heuristics. In fact, that is part of the point of this example, in the book you will see Norvig
+// mention that the algorithm does some backtracking because the heuristic is not accurate (yet still admissable).
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "stlastar.h"
 #include <iostream>
