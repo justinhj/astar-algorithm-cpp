@@ -383,7 +383,6 @@ public: // methods
 					// Greg Douglas <gregdouglasmail@gmail.com>
 					// who noticed that this code path was incorrect
 					// Here we have found a new state which is already CLOSED
-					// anus
 
 				}
 

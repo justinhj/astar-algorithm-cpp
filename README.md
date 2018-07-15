@@ -10,13 +10,12 @@ This code is an efficient implementation in C++ and C# of the A* algorithm, desi
 
 It accompanies this A* tutorial: http://www.heyes-jones.com/astar.html
 
-Thank you @ScaryG for the C# port. This addition should work on Unity as well as the .net/mono platforms. 
+Contributions: 
 
-Thank you to @Rasoul for submitting the path to Bucharest sample
-
-The CPP code has been used in several popular video games including THQ's "Company of Heroes", Activision's "Gun", "War of Sonria" by PlaygroundSquad as well as in the popular game prototyping engine Angel. http://code.google.com/p/angel-engine/
-
-It has also used in many University assignments and projects.
+* @justinhj Original code and tutorial
+* @ScaryG C# port
+* @Rasoul for submitting the path to Bucharest. Sample from Artificial Intelligence: A Modern Approach 
+* @sergiosota For fixing a number of issues related to memory management
 
 License
 =======
@@ -38,6 +37,7 @@ Using this code:
 * Company of Heroes and Company of Heroes Online, Relic Entertainment
 * Angel Engine, a game prototyping engine http://code.google.com/p/angel-engine/
 * War of Sonria, a strategy war game on PSP and Playstation 3 by Playground Squad
+* Lighthouses AI contest https://github.com/marcan/lighthouses_aicontest
 
 Compilation
 ===========
