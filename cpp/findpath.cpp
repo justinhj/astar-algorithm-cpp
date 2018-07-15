@@ -122,7 +122,7 @@ void MapSearchNode::PrintNodeInfo()
 
 float MapSearchNode::GoalDistanceEstimate( MapSearchNode &nodeGoal )
 {
-	return fabsf(x - nodeGoal.x) + fabsf(y - nodeGoal.y);	
+	return abs(x - nodeGoal.x) + abs(y - nodeGoal.y);
 }
 
 bool MapSearchNode::IsGoal( MapSearchNode &nodeGoal )
