@@ -1,5 +1,8 @@
 all : 8puzzle findpath minpathbucharest tests
 
+clean :
+	rm 8puzzle findpath minpathbucharest tests
+
 minpathbucharest : min_path_to_Bucharest.cpp stlastar.h
 	g++ -Wall min_path_to_Bucharest.cpp -o minpathbucharest
 
