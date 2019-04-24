@@ -10,6 +10,9 @@ This code is an efficient implementation in C++ and C# of the A* algorithm, desi
 
 It accompanies this A* tutorial: http://www.heyes-jones.com/astar.html
 
+The A* algorithm was described in the paper https://ieeexplore.ieee.org/document/4082128 by Hart, Nillson and Raphael. 
+Sadly Nils Nillson passed away in 2019, his work is much appreciated.
+
 Contributions: 
 
 * @justinhj Original code and tutorial
