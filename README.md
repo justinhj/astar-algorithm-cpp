@@ -32,15 +32,17 @@ This software has been used in AAA video games and is well tested in the wild. P
 
 If you feel the need to pay money for this code, it is not required by the license, but you could contribute to Unicef, a charity which helps children worldwide,  http://www.unicef.org/ that would be awesome.
 
-If you wish to be added to the list of known products using the code please contact me.
+Projects using this code
+========================
 
-Using this code:
+If you wish to be added to the list of known products/educational projects using the code please contact me.
 
 * Gun, Activision
 * Company of Heroes and Company of Heroes Online, Relic Entertainment
 * Angel Engine, a game prototyping engine http://code.google.com/p/angel-engine/
 * War of Sonria, a strategy war game on PSP and Playstation 3 by Playground Squad
 * Lighthouses AI contest https://github.com/marcan/lighthouses_aicontest
+* Self-Driving Car Engineer Nanodegree Program https://github.com/vanAken/CarND-Path-Planning-Project
 
 Compilation
 ===========
