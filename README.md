@@ -28,7 +28,7 @@ This software is released under the MIT License, see license.txt
 Commercial Use
 ==============
 
-This software has been used in AAA video games and is well tested in the wild. Please let me know if you use this code in you games, studies or hobby projects. 
+This software has been used in AAA video games and is well tested in the wild. Please let me know if you use this code in your games, studies or hobby projects. 
 
 If you feel the need to pay money for this code, it is not required by the license, but you could contribute to Unicef, a charity which helps children worldwide,  http://www.unicef.org/ that would be awesome.
 
