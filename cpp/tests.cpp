@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+
+using namespace std;
+
 #include "stlastar.h"
 
 const int MAP_WIDTH = 20;

@@ -17,6 +17,9 @@
 // accurate heuristics. In fact, that is part of the point of this example, in the book you will see Norvig
 // mention that the algorithm does some backtracking because the heuristic is not accurate (yet still admissable).
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+using namespace std;
+
 #include "stlastar.h"
 #include <iostream>
 #include <string>
@@ -25,8 +28,6 @@
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0
-
-using namespace std;
 
 const int MAX_CITIES = 20;
 

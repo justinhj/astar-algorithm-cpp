@@ -8,6 +8,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+using namespace std;
+
 #include "stlastar.h" // See header for copyright and usage information
 
 #include <iostream>
@@ -16,8 +18,6 @@
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0
-
-using namespace std;
 
 // Global data
 

@@ -37,8 +37,6 @@ given where due.
 #include <vector>
 #include <cfloat>
 
-using namespace std;
-
 // fast fixed size memory allocator, used for fast node memory management
 #include "fsa.h"
 
