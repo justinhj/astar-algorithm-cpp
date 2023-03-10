@@ -34,6 +34,8 @@ given where due.
 // stl includes
 #include <algorithm>
 #include <set>
+#include <unordered_set>
+// #include <boost/functional/hash.hpp>
 #include <vector>
 #include <cfloat>
 
@@ -94,8 +96,24 @@ public: // data
 			{			
 			}
 
+			bool operator==(const Node& otherNode) const
+			{
+				return this->m_UserState.IsSameState(otherNode->m_UserState);
+			}
+
 			UserState m_UserState;
 	};
+
+	// template<>
+	// struct std::hash<Node>
+	// {
+	// 		std::size_t operator()(Node const& n) const noexcept
+	// 		{
+	// 				std::size_t h1 = std::hash<std::string>{}(n.g);
+	// 				std::size_t h2 = std::hash<std::string>{}(n.h);
+	// 				return h1 ^ (h2 << 1); // or use boost::hash_combine
+	// 		}
+	// };
 
 
 	// For sorting the heap the STL needs compare function that lets us compare
@@ -283,9 +301,9 @@ public: // methods
 			}
 			
 			// Now handle each successor to the current node ...
-			for( typename vector< Node * >::iterator successor = m_Successors.begin(); successor != m_Successors.end(); successor ++ )
+			for( typename vector< Node * >::iterator s = m_Successors.begin(); s != m_Successors.end(); s ++ )
 			{
-
+				auto successor = &(*s);
 				// 	The g value for this successor ...
 				float newg = n->g + n->m_UserState.GetCost( (*successor)->m_UserState );
 
@@ -319,15 +337,17 @@ public: // methods
 					}
 				}
 
-				typename vector< Node * >::iterator closedlist_result;
+				// typename vector< Node * >::iterator closedlist_result;
 
-				for( closedlist_result = m_ClosedList.begin(); closedlist_result != m_ClosedList.end(); closedlist_result ++ )
-				{
-					if( (*closedlist_result)->m_UserState.IsSameState( (*successor)->m_UserState ) )
-					{
-						break;					
-					}
-				}
+				// for( closedlist_result = m_ClosedList.begin(); closedlist_result != m_ClosedList.end(); closedlist_result ++ )
+				// {
+				// 	if( (*closedlist_result)->m_UserState.IsSameState( (*successor)->m_UserState ) )
+				// 	{
+				// 		break;					
+				// 	}
+				// }
+
+				auto closedlist_result = m_ClosedList.find(*successor);
 
 				if( closedlist_result != m_ClosedList.end() )
 				{
@@ -424,7 +444,7 @@ public: // methods
 
 			// push n onto Closed, as we have expanded it now
 
-			m_ClosedList.push_back( n );
+			m_ClosedList.insert( n );
 
 		} // end else (not goal so expand)
 
@@ -681,7 +701,7 @@ private: // methods
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename vector< Node * >::iterator iterClosed;
+		typename unordered_set< Node * >::iterator iterClosed;
 
 		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
 		{
@@ -722,7 +742,7 @@ private: // methods
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename vector< Node * >::iterator iterClosed;
+		typename unordered_set< Node * >::iterator iterClosed;
 
 		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
 		{
@@ -780,7 +800,24 @@ private: // data
 	vector< Node *> m_OpenList;
 
 	// Closed list is a vector.
-	vector< Node * > m_ClosedList; 
+// 	struct NodePtrComp
+// {
+//   bool operator()(const Node* lhs, const Node* rhs) const  { return lhs->f < rhs->f;} //#TODO: read the is same state/use unordered_set which has a better condition
+// };
+// 	set< Node*, NodePtrComp > m_ClosedList; 
+	// struct NodeHash {
+	// size_t operator() (Node* const& n) const {
+	// 		// std::size_t seed = 0;
+	// 		// boost::hash_combine(seed, n->g);
+	// 		// boost::hash_combine(seed, n->h);
+	// 		// return seed;
+	// 		std::size_t h1 = 0;//std::hash<float>{}(n->m_UserState.g);
+	// 		std::size_t h2 = 1;//std::hash<float>{}(n->m_UserState.h);
+	// 		return h1 ^ (h2 << 1); // or use boost::hash_combine
+	// };
+	// unordered_set<Node*, NodeHash> m_ClosedList;
+		unordered_set<Node*> m_ClosedList;
+
 
 	// Successors is a vector filled out by the user each type successors to a node
 	// are generated
