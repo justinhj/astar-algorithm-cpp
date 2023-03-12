@@ -104,18 +104,6 @@ public: // data
 			UserState m_UserState;
 	};
 
-	// template<>
-	// struct std::hash<Node>
-	// {
-	// 		std::size_t operator()(Node const& n) const noexcept
-	// 		{
-	// 				std::size_t h1 = std::hash<std::string>{}(n.g);
-	// 				std::size_t h2 = std::hash<std::string>{}(n.h);
-	// 				return h1 ^ (h2 << 1); // or use boost::hash_combine
-	// 		}
-	// };
-
-
 	// For sorting the heap the STL needs compare function that lets us compare
 	// the f value of two nodes
 
@@ -336,16 +324,6 @@ public: // methods
 						continue;
 					}
 				}
-
-				// typename vector< Node * >::iterator closedlist_result;
-
-				// for( closedlist_result = m_ClosedList.begin(); closedlist_result != m_ClosedList.end(); closedlist_result ++ )
-				// {
-				// 	if( (*closedlist_result)->m_UserState.IsSameState( (*successor)->m_UserState ) )
-				// 	{
-				// 		break;					
-				// 	}
-				// }
 
 				auto closedlist_result = m_ClosedList.find(*successor);
 
@@ -701,7 +679,7 @@ private: // methods
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename unordered_set< Node * >::iterator iterClosed;
+		typename unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
 
 		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
 		{
@@ -742,7 +720,7 @@ private: // methods
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename unordered_set< Node * >::iterator iterClosed;
+		typename unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
 
 		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
 		{
@@ -799,24 +777,18 @@ private: // data
 	// Heap (simple vector but used as a heap, cf. Steve Rabin's game gems article)
 	vector< Node *> m_OpenList;
 
-	// Closed list is a vector.
-// 	struct NodePtrComp
-// {
-//   bool operator()(const Node* lhs, const Node* rhs) const  { return lhs->f < rhs->f;} //#TODO: read the is same state/use unordered_set which has a better condition
-// };
-// 	set< Node*, NodePtrComp > m_ClosedList; 
-	// struct NodeHash {
-	// size_t operator() (Node* const& n) const {
-	// 		// std::size_t seed = 0;
-	// 		// boost::hash_combine(seed, n->g);
-	// 		// boost::hash_combine(seed, n->h);
-	// 		// return seed;
-	// 		std::size_t h1 = 0;//std::hash<float>{}(n->m_UserState.g);
-	// 		std::size_t h2 = 1;//std::hash<float>{}(n->m_UserState.h);
-	// 		return h1 ^ (h2 << 1); // or use boost::hash_combine
-	// };
-	// unordered_set<Node*, NodeHash> m_ClosedList;
-		unordered_set<Node*> m_ClosedList;
+	// Closed list is a set
+	struct NodeHash {
+		size_t operator() (Node* const& n) const {
+			return n->m_UserState.Hash();
+		}
+	};
+	struct NodeEqual {
+		bool operator()(Node* a, Node* b) const {
+			return a->m_UserState.IsSameState(b->m_UserState);
+  	}
+	};
+	unordered_set<Node*, NodeHash, NodeEqual> m_ClosedList;
 
 
 	// Successors is a vector filled out by the user each type successors to a node
@@ -861,6 +833,7 @@ public:
 	virtual bool GetSuccessors( AStarSearch<T> *astarsearch, T *parent_node ) = 0; // Retrieves all successors to this node and adds them via astarsearch.addSuccessor()
 	virtual float GetCost( T &successor ) = 0; // Computes the cost of travelling from this node to the successor node
 	virtual bool IsSameState( T &rhs ) = 0; // Returns true if this node is the same as the rhs node
+	virtual float Hash() = 0;
 };
 
 #endif
