@@ -33,9 +33,7 @@ given where due.
 
 // stl includes
 #include <algorithm>
-#include <set>
 #include <unordered_set>
-// #include <boost/functional/hash.hpp>
 #include <vector>
 #include <cfloat>
 
@@ -777,7 +775,7 @@ private: // data
 	// Heap (simple vector but used as a heap, cf. Steve Rabin's game gems article)
 	vector< Node *> m_OpenList;
 
-	// Closed list is a set
+	// Closed is an unordered_set
 	struct NodeHash {
 		size_t operator() (Node* const& n) const {
 			return n->m_UserState.Hash();
@@ -833,7 +831,7 @@ public:
 	virtual bool GetSuccessors( AStarSearch<T> *astarsearch, T *parent_node ) = 0; // Retrieves all successors to this node and adds them via astarsearch.addSuccessor()
 	virtual float GetCost( T &successor ) = 0; // Computes the cost of travelling from this node to the successor node
 	virtual bool IsSameState( T &rhs ) = 0; // Returns true if this node is the same as the rhs node
-	virtual float Hash() = 0;
+	virtual std::size_t Hash() = 0; // Returns a hash for the state
 };
 
 #endif
