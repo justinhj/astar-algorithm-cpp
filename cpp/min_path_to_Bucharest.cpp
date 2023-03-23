@@ -49,6 +49,7 @@ public:
 	bool GetSuccessors( AStarSearch<PathSearchNode> *astarsearch, PathSearchNode *parent_node );
 	float GetCost( PathSearchNode &successor );
 	bool IsSameState( PathSearchNode &rhs );
+  size_t Hash();
 
 	void PrintNodeInfo();
 };
@@ -58,6 +59,11 @@ bool PathSearchNode::IsSameState( PathSearchNode &rhs )
 {
   if(city == rhs.city) return(true);
   return(false);
+}
+
+size_t PathSearchNode::Hash()
+{
+  return hash<int>{}(city);
 }
 
 // Euclidean distance between "this" node city and Bucharest

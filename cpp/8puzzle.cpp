@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <sstream>
 #include <stdio.h>
 #include <assert.h>
 #include <new>
@@ -115,6 +116,7 @@ public:
 	bool GetSuccessors( AStarSearch<PuzzleState> *astarsearch, PuzzleState *parent_node );
 	float GetCost( PuzzleState &successor );
 	bool IsSameState( PuzzleState &rhs );
+	size_t Hash();
 	
 	void PrintNodeInfo(); 
 
@@ -333,6 +335,19 @@ bool PuzzleState::IsSameState( PuzzleState &rhs )
 
 	return true;
 
+}
+
+// The 9 tiles positions can be encoded as digits
+size_t PuzzleState::Hash()
+{
+	stringstream stream;
+	for( size_t i = 0; i < (BOARD_HEIGHT * BOARD_WIDTH); i++ )
+	{
+		stream << tiles[i];
+	}
+	size_t state_digits;
+	stream >> state_digits;
+	return hash<size_t>{}(state_digits);
 }
 
 void PuzzleState::PrintNodeInfo()

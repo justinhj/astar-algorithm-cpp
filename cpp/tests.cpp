@@ -73,6 +73,7 @@ public:
 	bool GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapSearchNode *parent_node );
 	float GetCost( MapSearchNode &successor );
 	bool IsSameState( MapSearchNode &rhs );
+	size_t Hash();
 
 	void PrintNodeInfo(); 
 
@@ -188,6 +189,13 @@ float MapSearchNode::GetCost( MapSearchNode &successor )
 {
 	return (float) GetMap( x, y );
 
+}
+
+size_t MapSearchNode::Hash()
+{
+	size_t h1 = hash<float>{}(x);
+	size_t h2 = hash<float>{}(y);
+	return h1 ^ (h2 << 1);
 }
 
 int main(int argc, char *argv[]) {
