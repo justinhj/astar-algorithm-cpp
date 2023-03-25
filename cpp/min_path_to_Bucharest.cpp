@@ -18,13 +18,14 @@
 // mention that the algorithm does some backtracking because the heuristic is not accurate (yet still admissable).
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using namespace std;
-
-#include "stlastar.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <stdio.h>
+
+using namespace std;
+
+#include "stlastar.h"
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0

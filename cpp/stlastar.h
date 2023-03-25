@@ -81,7 +81,7 @@ public: // data
 			Node *parent; // used during the search to record the parent of successor nodes
 			Node *child; // used after the search for the application to view the search in reverse
 			
-			float g; // cost of this node + it's predecessors
+			float g; // cost of this node + its predecessors
 			float h; // heuristic estimate of distance to goal
 			float f; // sum of cumulative cost of predecessors and self and heuristic
 
@@ -321,8 +321,9 @@ public: // methods
 						continue;
 					}
 				}
+        typename unordered_set<Node*, NodeHash, NodeEqual>::iterator closedlist_result;
 
-				auto closedlist_result = m_ClosedList.find(*successor);
+        closedlist_result = m_ClosedList.find(*successor);
 
 				if( closedlist_result != m_ClosedList.end() )
 				{

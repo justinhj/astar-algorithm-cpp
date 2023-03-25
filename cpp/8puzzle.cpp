@@ -345,9 +345,7 @@ size_t PuzzleState::Hash()
 	{
 		stream << tiles[i];
 	}
-	size_t state_digits;
-	stream >> state_digits;
-	return hash<size_t>{}(state_digits);
+  return std::hash<std::string>{}(stream.str());
 }
 
 void PuzzleState::PrintNodeInfo()
