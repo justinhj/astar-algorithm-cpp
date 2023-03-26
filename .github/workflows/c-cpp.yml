@@ -1,0 +1,17 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master", "stage" ]
+  pull_request:
+    branches: [ "master", "stage" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: make test
+      run: make test
