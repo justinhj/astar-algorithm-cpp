@@ -78,9 +78,9 @@ public:
 
 	// defs
 
-	typedef enum
+	typedef enum: char
 	{
-		TL_SPACE,
+		TL_SPACE = 0,
 		TL_1,
 		TL_2,
 		TL_3,

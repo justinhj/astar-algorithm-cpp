@@ -110,6 +110,8 @@ bool MapSearchNode::IsSameState( MapSearchNode &rhs )
 
 }
 
+// This hash is an example from https://en.cppreference.com/w/cpp/utility/hash
+// which works well for simple (X,Y) states
 size_t MapSearchNode::Hash()
 {
 	size_t h1 = hash<float>{}(x);

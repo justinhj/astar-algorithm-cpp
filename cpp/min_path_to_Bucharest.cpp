@@ -29,9 +29,9 @@ using namespace std;
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0
 
-const int MAX_CITIES = 20;
+const size_t MAX_CITIES = 20;
 
-enum ENUM_CITIES{Arad=0, Bucharest, Craiova, Drobeta, Eforie, Fagaras, Giurgiu, Hirsova, Iasi, Lugoj, Mehadia, Neamt, Oradea, Pitesti, RimnicuVilcea, Sibiu, Timisoara, Urziceni, Vaslui, Zerind};
+enum ENUM_CITIES: size_t {Arad=0, Bucharest, Craiova, Drobeta, Eforie, Fagaras, Giurgiu, Hirsova, Iasi, Lugoj, Mehadia, Neamt, Oradea, Pitesti, RimnicuVilcea, Sibiu, Timisoara, Urziceni, Vaslui, Zerind};
 vector<string> CityNames(MAX_CITIES);
 float RomaniaMap[MAX_CITIES][MAX_CITIES];
 
@@ -63,7 +63,7 @@ bool PathSearchNode::IsSameState( PathSearchNode &rhs )
 
 size_t PathSearchNode::Hash()
 {
-  return hash<int>{}(city);
+  return hash<size_t>{}(city);
 }
 
 // Euclidean distance between "this" node city and Bucharest
@@ -109,7 +109,7 @@ bool PathSearchNode::IsGoal( PathSearchNode &nodeGoal )
 bool PathSearchNode::GetSuccessors( AStarSearch<PathSearchNode> *astarsearch, PathSearchNode *parent_node )
 {
   PathSearchNode NewNode;
-  for(int c=0; c<MAX_CITIES; c++)
+  for(size_t c=0; c<MAX_CITIES; c++)
   {
     if(RomaniaMap[city][c] < 0) continue;
     NewNode = PathSearchNode((ENUM_CITIES)c);
@@ -133,8 +133,8 @@ void PathSearchNode::PrintNodeInfo()
 int main( int argc, char *argv[] )
 {
   // creating map of Romania
-  for(int i=0; i<MAX_CITIES; i++)
-    for(int j=0; j<MAX_CITIES; j++)
+  for(size_t i=0; i<MAX_CITIES; i++)
+    for(size_t j=0; j<MAX_CITIES; j++)
       RomaniaMap[i][j]=-1.0;
 
   RomaniaMap[Arad][Sibiu]=140;
