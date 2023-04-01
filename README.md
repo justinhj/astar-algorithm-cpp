@@ -15,6 +15,12 @@ This repository is dedicated to the memory of Nils Nillson who passed away in 20
 
 ### Release notes
 
+[v1.2](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.2) 
+Breaking changes! C++ 11 is now the minimum required C++ standard complicance.
+User is now required to provide a Hash function for their Node type. Thanks to a contribution from @btdubs the closed 
+list is now an unordered_set and this greatly speeds up the execution time of the algorithm.
+Check the included demo code for examples of the Hash implementation for various Node types.
+
 [v1.1](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.1) 
 Code cleanup and final version that does not require C++11
 
