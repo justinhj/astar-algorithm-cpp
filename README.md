@@ -1,6 +1,6 @@
 ## astar-algorithm
 
-![Build Status](https://github.com/justinhj/astar-algorithm-cpp/workflows/C/C++ CI/badge.svg)
+![Build Status](https://github.com/justinhj/astar-algorithm-cpp/workflows/C/C++%20CI/badge.svg)
 
 ### Summary
 
