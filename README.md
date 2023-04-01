@@ -93,4 +93,4 @@ it if you hit an out of memory assert during the search.
 
 Compatibility notes:
 
-This version of the code requires any standards compliant C++98/03 
+This version of the code requires any standards compliant C++ using std C++11
