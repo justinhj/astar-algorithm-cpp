@@ -13,14 +13,10 @@ The A* algorithm was described in the paper https://ieeexplore.ieee.org/document
 
 This repository is dedicated to the memory of Nils Nillson who passed away in 2019.
 
-Contributions: 
-
-* @justinhj Original code and tutorial
-* @ScaryG C# port
-* @Rasoul for submitting the path to Bucharest. Sample from Artificial Intelligence: A Modern Approach 
-* @sergiosota For fixing a number of issues related to memory management
-
 ### Release notes
+
+[v1.1](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.1) 
+Code cleanup and final version that does not require C++11
 
 [v1.0](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.0) 
 Initial release once API stable.
