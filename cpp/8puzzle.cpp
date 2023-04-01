@@ -350,8 +350,9 @@ size_t PuzzleState::Hash()
 
 void PuzzleState::PrintNodeInfo()
 {
-	char str[100];
-	sprintf( str, "%c %c %c\n%c %c %c\n%c %c %c\n", 
+  const int strSize = 100;
+	char str[strSize];
+	snprintf( str, strSize, "%c %c %c\n%c %c %c\n%c %c %c\n", 
 			tiles[0] + '0',
 			tiles[1] + '0',
 			tiles[2] + '0',

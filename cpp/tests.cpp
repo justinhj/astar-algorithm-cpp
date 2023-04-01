@@ -98,8 +98,9 @@ bool MapSearchNode::IsSameState( MapSearchNode &rhs )
 
 void MapSearchNode::PrintNodeInfo()
 {
-	char str[100];
-	sprintf( str, "Node position : (%d,%d)\n", x,y );
+  const int strSize = 100;
+	char str[strSize];
+	snprintf( str, strSize, "Node position : (%d,%d)\n", x,y );
 
 	cout << str;
 }
