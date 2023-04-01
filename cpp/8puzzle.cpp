@@ -152,7 +152,7 @@ PuzzleState::TILE PuzzleState::g_start[] =
 
 	// Three example start states from Bratko's Prolog Programming for Artificial Intelligence
 
-#if 1
+#if 0
 	// ex a - 4 steps
 	 TL_1 ,
 	 TL_3 ,
@@ -267,7 +267,7 @@ PuzzleState::TILE PuzzleState::g_start[] =
 	 TL_7 ,
 	 TL_5 ,
 
-#elif 0
+#elif 1
 
 	// worst 30
 	 TL_5 ,
@@ -340,12 +340,12 @@ bool PuzzleState::IsSameState( PuzzleState &rhs )
 // The 9 tiles positions can be encoded as digits
 size_t PuzzleState::Hash()
 {
-	stringstream stream;
+  std::size_t hash = 0;
 	for( size_t i = 0; i < (BOARD_HEIGHT * BOARD_WIDTH); i++ )
 	{
-		stream << tiles[i];
+    hash ^= std::hash<int>()(tiles[i]) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
 	}
-  return std::hash<std::string>{}(stream.str());
+  return hash;
 }
 
 void PuzzleState::PrintNodeInfo()
