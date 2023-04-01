@@ -1,6 +1,6 @@
 ## astar-algorithm
 
-[![Build Status](https://travis-ci.org/justinhj/astar-algorithm-cpp.svg?branch=master)](https://travis-ci.org/justinhj/astar-algorithm-cpp) [![Join the chat at https://gitter.im/astar-algorithm-cpp/community](https://badges.gitter.im/astar-algorithm-cpp/community.svg)](https://gitter.im/astar-algorithm-cpp/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![Build Status](https://github.com/justinhj/astar-algorithm-cpp/workflows/C/C++ CI/badge.svg)
 
 ### Summary
 
@@ -11,7 +11,7 @@ https://www.heyes-jones.com/astar.php
 
 The A* algorithm was described in the paper https://ieeexplore.ieee.org/document/4082128 by Hart, Nillson and Raphael. 
 
-Sadly Nils Nillson passed away in 2019, his work is much appreciated.
+This repository is dedicated to the memory of Nils Nillson who passed away in 2019.
 
 Contributions: 
 
@@ -20,22 +20,27 @@ Contributions:
 * @Rasoul for submitting the path to Bucharest. Sample from Artificial Intelligence: A Modern Approach 
 * @sergiosota For fixing a number of issues related to memory management
 
+### Release notes
+
+[v1.0](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.0) 
+Initial release once API stable.
+
 ### License
 
 This software is released under the MIT License, see license.txt
 
 ### Commercial Use
 
-This software has been used in AAA video games and is well tested in the wild. Please let me know if you use this code in your games, studies or hobby projects. 
+This software has been used in a number of AAA video games, which is an area of software that relies on efficiency and reliability. In addition it has been used in a number of academic and personal projects that require efficient search. Please 
 
-If you feel the need to pay money for this code, it is not required by the license, but you could contribute to Unicef, a charity which helps children worldwide,  http://www.unicef.org/ that would be awesome.
+Commercial users of the code are encouraged to make a donation to http://www.unicef.org/ if they find this project useful.
 
 ### Projects using this code
 
 If you wish to be added to the list of known products/educational projects using the code please contact me.
 
 * Gun, Activision
-* Company of Heroes and Company of Heroes Online, Relic Entertainment
+* Company of Heroes (various versions), Relic Entertainment
 * Angel Engine, a game prototyping engine http://code.google.com/p/angel-engine/
 * War of Sonria, a strategy war game on PSP and Playstation 3 by Playground Squad
 * Lighthouses AI contest https://github.com/marcan/lighthouses_aicontest
@@ -74,24 +79,16 @@ For path finder
 pathfind has no arguments. You can edit the simple map in pathfind.cpp and the start 
 and goal co-ordinates to experiement with the pathfinder.
 
-Fixed size allocator notes: As mentioned briefly in the tutorial you can enable and disable the
-faster memory allocation. This allocates a fixed size block of memory, so you have to specify this size
-with the astar constructor. You need to enlarge it if you hit an out of memory assert during the
-search.
+#### Fixed size allocator
 
-Compilation notes:
+FSA is just a simple memory pool that uses a doubly linked list of available nodes in an array. This is 
+a very efficient way to manage memory. It has no automatic resizing, so you must account for the fact it 
+will use a fixed block of memory per instance and will report an error when memory is exhausted.
 
-Microsoft Visual C++ : Confirmed working with version 8.0.50727 with some deprecation warnings
-I'm going to leave the deprecation warnings in so that it still works cleanly with GCC. 
-TODO Make a non-deprecated compliant version using compiler checking
+As mentioned briefly in the tutorial you can enable and disable the faster memory allocation. This allocates 
+a fixed size block of memory, so you have to specify this size with the astar constructor. You need to enlarge 
+it if you hit an out of memory assert during the search.
 
-Compiled with:
+Compatibility notes:
 
-Apple clang version 12.0.0 (clang-1200.0.32.28)
-Target: x86_64-apple-darwin19.6.0
-
-Please let me know if it does not compile on a particular platform by opening an issue.
-
-Cheers!
-
-Justin
+This version of the code requires any standards compliant C++98/03 
