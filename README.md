@@ -11,7 +11,11 @@ https://www.heyes-jones.com/astar.php
 
 The A* algorithm was described in the paper https://ieeexplore.ieee.org/document/4082128 by Hart, Nillson and Raphael. 
 
-This repository is dedicated to the memory of Nils Nillson who passed away in 2019.
+This repository is dedicated to the memory of [Nils Nilsson](https://ai.stanford.edu/~nilsson/) who sadly passed away in 2019.
+
+### Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=justinhj/astar-algorithm-cpp&type=Date)](https://star-history.com/#justinhj/astar-algorithm-cpp&Date)
 
 ### Release notes
 
