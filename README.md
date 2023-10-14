@@ -4,14 +4,17 @@
 
 ### Summary
 
-This code is an efficient implementation in C++ and C# of the A* algorithm, designed to be used from high performance realtime applications (video games) and with an optional fast memory allocation scheme.
+An efficient implementation in C++ of the A* algorithm, designed to be used in high performance realtime applications (video games) and includes an optional pool memory allocator.
 
 It accompanies this A* tutorial:
 https://www.heyes-jones.com/astar.php
 
-The A* algorithm was described in the paper https://ieeexplore.ieee.org/document/4082128 by Hart, Nillson and Raphael. 
+The A* algorithm is due to Hart, Nillson and Raphael. See https://ieeexplore.ieee.org/document/4082128. 
 
 This repository is dedicated to the memory of [Nils Nilsson](https://ai.stanford.edu/~nilsson/) who sadly passed away in 2019.
+
+Looking for a C# version? Checkout the companion repository for a port by @scaryg
+https://github.com/justinhj/astar-algorithm-csharp
 
 ### Star History
 
@@ -20,7 +23,7 @@ This repository is dedicated to the memory of [Nils Nilsson](https://ai.stanford
 ### Release notes
 
 [v1.2](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.2) 
-Breaking changes! C++ 11 is now the minimum required C++ standard complicance.
+Breaking changes! C++ 11 is now the minimum required C++ standard.
 User is now required to provide a Hash function for their Node type. Thanks to a contribution from @btdubs the closed 
 list is now an unordered_set and this greatly speeds up the execution time of the algorithm.
 Check the included demo code for examples of the Hash implementation for various Node types.
