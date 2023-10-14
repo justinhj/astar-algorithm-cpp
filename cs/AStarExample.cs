@@ -132,7 +132,7 @@ public class MapSearchNode
 	// is specific to the application
 	public bool GetSuccessors(AStarPathfinder aStarSearch, MapSearchNode parentNode)
 	{
-		NodePosition parentPos = new NodePosition(0, 0);
+		NodePosition parentPos = new NodePosition(-1, -1);
 
 		if (parentNode != null)
 		{
