@@ -13,8 +13,7 @@ The A* algorithm is due to Hart, Nillson and Raphael. See https://ieeexplore.iee
 
 This repository is dedicated to the memory of [Nils Nilsson](https://ai.stanford.edu/~nilsson/) who sadly passed away in 2019.
 
-Looking for a C# version? Checkout the companion repository for a port by @scaryg
-https://github.com/justinhj/astar-algorithm-csharp
+Looking for a C# version? Checkout the companion repository [astar-algorithm-csharp](https://github.com/justinhj/astar-algorithm-csharp) for a port by [@scaryg](https://github.com/scaryg)
 
 ### Star History
 
