@@ -14,8 +14,6 @@
 
 #include <ctype.h>
 
-using namespace std;
-
 // Configuration
 
 #define NUM_TIMES_TO_RUN_SEARCH 1
@@ -26,6 +24,8 @@ using namespace std;
 
 // AStar search class
 #include "stlastar.h" // See header for copyright and usage information
+
+using namespace std;
 
 // Global data
 

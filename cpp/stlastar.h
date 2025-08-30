@@ -268,7 +268,7 @@ public: // methods
 			if( !ret )
 			{
 
-			    typename vector< Node * >::iterator successor;
+			    typename std::vector< Node * >::iterator successor;
 
 				// free the nodes that may previously have been added 
 				for( successor = m_Successors.begin(); successor != m_Successors.end(); successor ++ )
@@ -287,7 +287,7 @@ public: // methods
 			}
 			
 			// Now handle each successor to the current node ...
-			for( typename vector< Node * >::iterator successor = m_Successors.begin(); successor != m_Successors.end(); successor ++ )
+			for( typename std::vector< Node * >::iterator successor = m_Successors.begin(); successor != m_Successors.end(); successor ++ )
 			{
 				// 	The g value for this successor ...
 				float newg = n->g + n->m_UserState.GetCost( (*successor)->m_UserState );
@@ -298,7 +298,7 @@ public: // methods
 
 				// First linear search of open list to find node
 
-				typename vector< Node * >::iterator openlist_result;
+				typename std::vector< Node * >::iterator openlist_result;
 
 				for( openlist_result = m_OpenList.begin(); openlist_result != m_OpenList.end(); openlist_result ++ )
 				{
@@ -321,7 +321,7 @@ public: // methods
 						continue;
 					}
 				}
-        typename unordered_set<Node*, NodeHash, NodeEqual>::iterator closedlist_result;
+        typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator closedlist_result;
 
         closedlist_result = m_ClosedList.find(*successor);
 
@@ -664,7 +664,7 @@ private: // methods
 	void FreeAllNodes()
 	{
 		// iterate open list and delete all nodes
-		typename vector< Node * >::iterator iterOpen = m_OpenList.begin();
+		typename std::vector< Node * >::iterator iterOpen = m_OpenList.begin();
 
 		while( iterOpen != m_OpenList.end() )
 		{
@@ -677,7 +677,7 @@ private: // methods
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
+		typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
 
 		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
 		{
@@ -699,7 +699,7 @@ private: // methods
 	void FreeUnusedNodes()
 	{
 		// iterate open list and delete unused nodes
-		typename vector< Node * >::iterator iterOpen = m_OpenList.begin();
+		typename std::vector< Node * >::iterator iterOpen = m_OpenList.begin();
 
 		while( iterOpen != m_OpenList.end() )
 		{
@@ -718,7 +718,7 @@ private: // methods
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
+		typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
 
 		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
 		{
@@ -773,7 +773,7 @@ private: // methods
 private: // data
 
 	// Heap (simple vector but used as a heap, cf. Steve Rabin's game gems article)
-	vector< Node *> m_OpenList;
+	std::vector< Node *> m_OpenList;
 
 	// Closed is an unordered_set
 	struct NodeHash {
@@ -786,12 +786,12 @@ private: // data
 			return a->m_UserState.IsSameState(b->m_UserState);
   	}
 	};
-	unordered_set<Node*, NodeHash, NodeEqual> m_ClosedList;
+	std::unordered_set<Node*, NodeHash, NodeEqual> m_ClosedList;
 
 
 	// Successors is a vector filled out by the user each type successors to a node
 	// are generated
-	vector< Node * > m_Successors;
+	std::vector< Node * > m_Successors;
 
 	// State
 	unsigned int m_State;
@@ -812,8 +812,8 @@ private: // data
 	
 	//Debug : need to keep these two iterators around
 	// for the user Dbg functions
-	typename vector< Node * >::iterator iterDbgOpen;
-	typename vector< Node * >::iterator iterDbgClosed;
+	typename std::vector< Node * >::iterator iterDbgOpen;
+	typename std::vector< Node * >::iterator iterDbgClosed;
 
 	// debugging : count memory allocation and free's
 	int m_AllocateNodeCount;

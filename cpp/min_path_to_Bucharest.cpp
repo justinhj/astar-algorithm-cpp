@@ -23,9 +23,9 @@
 #include <vector>
 #include <stdio.h>
 
-using namespace std;
-
 #include "stlastar.h"
+
+using namespace std;
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0

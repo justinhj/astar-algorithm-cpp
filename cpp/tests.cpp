@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-using namespace std;
-
 #include "stlastar.h"
+
+using namespace std;
 
 const int MAP_WIDTH = 20;
 const int MAP_HEIGHT = 20;
