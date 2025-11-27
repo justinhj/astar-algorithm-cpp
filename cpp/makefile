@@ -23,9 +23,3 @@ tests : tests.cpp 8puzzle findpath minpathbucharest
 
 test: tests
 	./tests
-
-
-
-
-
-
