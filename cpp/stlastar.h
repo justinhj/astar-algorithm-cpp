@@ -813,7 +813,7 @@ private: // data
 	//Debug : need to keep these two iterators around
 	// for the user Dbg functions
 	typename std::vector< Node * >::iterator iterDbgOpen;
-	typename std::vector< Node * >::iterator iterDbgClosed;
+	typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator iterDbgClosed;
 
 	// debugging : count memory allocation and free's
 	int m_AllocateNodeCount;
