@@ -7,11 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
-#include <sstream>
 #include <stdio.h>
 #include <assert.h>
-#include <new>
-
 #include <ctype.h>
 
 // Configuration
@@ -668,7 +665,9 @@ int main( int argc, char *argv[] )
 
 		unsigned int SearchState;
 
+#if DEBUG_LISTS
 		unsigned int SearchSteps = 0;
+#endif
 
 		do
 		{
@@ -711,7 +710,10 @@ int main( int argc, char *argv[] )
 				astarsearch.CancelSearch();
 			}
 #endif
+
+#if DEBUG_LISTS
 			SearchSteps++;
+#endif
 		}
 		while( SearchState == AStarSearch<PuzzleState>::SEARCH_STATE_SEARCHING );
 
