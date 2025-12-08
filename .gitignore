@@ -3,3 +3,5 @@ cpp/8puzzle
 cpp/findpath
 cpp/minpathbucharest
 cpp/tests
+build/
+build-release

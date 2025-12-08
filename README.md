@@ -54,21 +54,25 @@ If you wish to be added to the list of known products/educational projects using
 * Lighthouses AI contest https://github.com/marcan/lighthouses_aicontest
 * Self-Driving Car Engineer Nanodegree Program https://github.com/vanAken/CarND-Path-Planning-Project
 
-### Compilation
+### Building
 
-Enter the cpp folder and run make
+Generally you can just include the stlastar.h and, optionally, the fsa.h header files and use it directly. The build instructions below are purely for the test suite and example executables.
 
-#### Introduction
+#### Using CMake
 
-This implementation is intended to be simple to read yet fairly
-efficient. To build it you can compile, with any recent C++ compiler,
-the following files :
+Some examples:
 
-For 8-puzzle solver
+** Use make and make a debug build **
+    ```bash
+    cmake -S . -B builddebug -DCMAKE_BUILD_TYPE=debug
+    ```
 
-* 8puzzle.cpp
-* stlastar.h
-* optionally fsa.h
+** Use Ninja and make a Release build **
+    ```bash
+    cmake -S . -B ninjabuildrelease -DCMAKE_BUILD_TYPE=release
+    ```
+
+In both cases you can execute the build using `make -C [build folder]` or `ninja -C [build folder]`.
 
 #### Command line 
 
@@ -99,4 +103,4 @@ it if you hit an out of memory assert during the search.
 
 Compatibility notes:
 
-This version of the code requires any standards compliant C++ using std C++11
+This version of the code requires any standards compliant C++ using std C++11. To build it requires a minimum cmake version you can find in the `CMakeLists.txt` file.
