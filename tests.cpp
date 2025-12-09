@@ -3,10 +3,15 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #include "stlastar.h"
 
-using namespace std;
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+
+using std::cout;
+using std::hash;
 
 const int MAP_WIDTH = 20;
 const int MAP_HEIGHT = 20;
@@ -159,7 +164,7 @@ size_t MapSearchNode::Hash() {
     return h1 ^ (h2 << 1);
 }
 
-int main(int argc, char* argv[]) {
+TEST_CASE("Map Search") {
     AStarSearch<MapSearchNode> astarsearch;
 
     unsigned int SearchCount = 0;
@@ -188,82 +193,27 @@ int main(int argc, char* argv[]) {
             SearchState = astarsearch.SearchStep();
 
             SearchSteps++;
-
-#if DEBUG_LISTS
-
-            cout << "Steps:" << SearchSteps << "\n";
-
-            int len = 0;
-
-            cout << "Open:\n";
-            MapSearchNode* p = astarsearch.GetOpenListStart();
-            while (p) {
-                len++;
-#if !DEBUG_LIST_LENGTHS_ONLY
-                ((MapSearchNode*)p)->PrintNodeInfo();
-#endif
-                p = astarsearch.GetOpenListNext();
-            }
-
-            cout << "Open list has " << len << " nodes\n";
-
-            len = 0;
-
-            cout << "Closed:\n";
-            p = astarsearch.GetClosedListStart();
-            while (p) {
-                len++;
-#if !DEBUG_LIST_LENGTHS_ONLY
-                p->PrintNodeInfo();
-#endif
-                p = astarsearch.GetClosedListNext();
-            }
-
-            cout << "Closed list has " << len << " nodes\n";
-#endif
-
         } while (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
 
         if (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED) {
-            cout << "Search found goal state\n";
-
             MapSearchNode* node = astarsearch.GetSolutionStart();
 
-#if DISPLAY_SOLUTION
-            cout << "Displaying solution\n";
-#endif
-            int steps = 0;
-
-            node->PrintNodeInfo();
             for (;;) {
                 node = astarsearch.GetSolutionNext();
 
                 if (!node) {
                     break;
                 }
-
-                node->PrintNodeInfo();
-                steps++;
             };
-
-            cout << "Solution steps " << steps << endl;
 
             // Once you're done with the solution you can free the nodes up
             astarsearch.FreeSolutionNodes();
 
-        } else if (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_FAILED) {
-            cout << "Search terminated. Did not find goal state\n";
         }
-
-        // Display the number of loops the search went through
-        cout << "SearchSteps : " << SearchSteps << "\n";
 
         SearchCount++;
 
         astarsearch.EnsureMemoryFreed();
+        CHECK(SearchSteps == 227);
     }
-
-    assert(true && "failed to be true");
-
-    printf("Tests succeeded\n");
 }
