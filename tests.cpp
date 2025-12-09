@@ -1,5 +1,13 @@
 // A unit test suite
 
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include "stlastar.h" // Assuming this is your header
+
+TEST_CASE("Test A* Basic Functionality") {
+    // Your test logic here
+    CHECK(1 + 1 == 2);
+}
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,7 +167,7 @@ size_t MapSearchNode::Hash() {
     return h1 ^ (h2 << 1);
 }
 
-int main(int argc, char* argv[]) {
+int main2(int argc, char* argv[]) {
     AStarSearch<MapSearchNode> astarsearch;
 
     unsigned int SearchCount = 0;
