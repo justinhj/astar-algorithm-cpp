@@ -28,11 +28,9 @@ given where due.
 // used for text debugging
 #include <stdio.h>
 
-#include <iostream>
 #include <assert.h>
 
 // stl includes
-#include <algorithm>
 #include <cfloat>
 #include <unordered_set>
 #include <vector>

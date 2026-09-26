@@ -28,6 +28,9 @@ target_link_libraries(findpath stlastar)
 add_executable(minpathbucharest min_path_to_Bucharest.cpp)
 target_link_libraries(minpathbucharest stlastar)
 
+add_executable(bench bench.cpp)
+target_link_libraries(bench stlastar)
+
 enable_testing()
 add_executable(tests tests.cpp)
 
