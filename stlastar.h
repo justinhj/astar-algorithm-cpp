@@ -26,14 +26,15 @@ given where due.
 #ifndef STLASTAR_H
 #define STLASTAR_H
 // used for text debugging
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
 
 // stl includes
+#include <algorithm>
 #include <cfloat>
+#include <cstdint>
 #include <unordered_set>
 #include <vector>
-#include <algorithm>
 
 // fast fixed size memory allocator, used for fast node memory management
 #include "fsa.h"
@@ -77,7 +78,9 @@ class AStarSearch {
         float h;  // heuristic estimate of distance to goal
         float f;  // sum of cumulative cost of predecessors and self and heuristic
 
-        Node() : parent(0), child(0), g(0.0f), h(0.0f), f(0.0f) {}
+        size_t heap_index;  // index in m_OpenList, or SIZE_MAX when not on the heap
+
+        Node() : parent(0), child(0), g(0.0f), h(0.0f), f(0.0f), heap_index(SIZE_MAX) {}
 
         bool operator==(const Node& otherNode) const {
             return this->m_UserState.IsSameState(otherNode.m_UserState);
@@ -147,12 +150,12 @@ class AStarSearch {
 
         // Push the start node on the Open list
 
-        m_OpenList.push_back(m_Start);  // heap now unsorted
-
-        // Sort back element into heap
-        push_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
+        m_Start->heap_index = m_OpenList.size();
+        m_OpenList.push_back(m_Start);
+        siftUp(m_Start->heap_index);
 
         m_OpenSet.insert(m_Start);
+        AssertHeapInvariants();
 
         // Initialise counter for search steps
         m_Steps = 0;
@@ -182,9 +185,14 @@ class AStarSearch {
 
         // Pop the best node (the one with the lowest f)
         Node* n = m_OpenList.front();  // get pointer to the node
-        pop_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
+        swapNodes(0, m_OpenList.size() - 1);
         m_OpenList.pop_back();
+        n->heap_index = SIZE_MAX;
+        if (!m_OpenList.empty()) {
+            siftDown(0);
+        }
         m_OpenSet.erase(n);
+        AssertHeapInvariants();
 
         // Check for the goal, once we pop that we're done
         if (n->m_UserState.IsGoal(m_Goal->m_UserState)) {
@@ -313,16 +321,17 @@ class AStarSearch {
                     FreeNode((*successor));
 
                     // Push closed node into open list
+                    (*closedlist_result)->heap_index = m_OpenList.size();
                     m_OpenList.push_back((*closedlist_result));
 
                     // Remove closed node from closed list
                     m_ClosedList.erase(closedlist_result);
 
-                    // Sort back element into heap
-                    push_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
+                    siftUp((*closedlist_result)->heap_index);
 
                     // Add to open set
                     m_OpenSet.insert(*closedlist_result);
+                    AssertHeapInvariants();
 
                     // Fix thanks to ...
                     // Greg Douglas <gregdouglasmail@gmail.com>
@@ -346,11 +355,8 @@ class AStarSearch {
                     // Free successor node
                     FreeNode((*successor));
 
-                    // re-make the heap
-                    // make_heap rather than sort_heap is an essential bug fix
-                    // thanks to Mike Ryynanen for pointing this out and then explaining
-                    // it in detail. sort_heap called on an invalid heap does not work
-                    make_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
+                    siftUp((*openlist_result)->heap_index);
+                    AssertHeapInvariants();
                 }
 
                 // New successor
@@ -359,13 +365,14 @@ class AStarSearch {
 
                 else {
                     // Push successor node into open list
+                    (*successor)->heap_index = m_OpenList.size();
                     m_OpenList.push_back((*successor));
 
-                    // Sort back element into heap
-                    push_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
+                    siftUp((*successor)->heap_index);
 
                     // Add to open set
                     m_OpenSet.insert(*successor);
+                    AssertHeapInvariants();
                 }
             }
 
@@ -568,6 +575,68 @@ class AStarSearch {
     }
 
    private:  // methods
+    void swapNodes(size_t i, size_t j) {
+        if (i == j) return;
+        std::swap(m_OpenList[i], m_OpenList[j]);
+        m_OpenList[i]->heap_index = i;
+        m_OpenList[j]->heap_index = j;
+    }
+
+    void siftUp(size_t i) {
+        HeapCompare_f compare;
+        while (i > 0) {
+            size_t parent = (i - 1) / 2;
+            if (compare(m_OpenList[parent], m_OpenList[i])) {
+                swapNodes(parent, i);
+                i = parent;
+            } else {
+                break;
+            }
+        }
+    }
+
+    void siftDown(size_t i) {
+        HeapCompare_f compare;
+        size_t size = m_OpenList.size();
+        while (true) {
+            size_t smallest = i;
+            size_t left = 2 * i + 1;
+            size_t right = 2 * i + 2;
+
+            if (left < size && compare(m_OpenList[smallest], m_OpenList[left])) {
+                smallest = left;
+            }
+            if (right < size && compare(m_OpenList[smallest], m_OpenList[right])) {
+                smallest = right;
+            }
+
+            if (smallest != i) {
+                swapNodes(i, smallest);
+                i = smallest;
+            } else {
+                break;
+            }
+        }
+    }
+
+    void AssertHeapInvariants() const {
+#if !defined(NDEBUG)
+        HeapCompare_f compare;
+        for (size_t i = 0; i < m_OpenList.size(); ++i) {
+            assert(m_OpenList[i] != nullptr);
+            assert(m_OpenList[i]->heap_index == i);
+            size_t left = 2 * i + 1;
+            size_t right = 2 * i + 2;
+            if (left < m_OpenList.size()) {
+                assert(!compare(m_OpenList[i], m_OpenList[left]));
+            }
+            if (right < m_OpenList.size()) {
+                assert(!compare(m_OpenList[i], m_OpenList[right]));
+            }
+        }
+#endif
+    }
+
     // This is called when a search fails or is cancelled to free all used
     // memory
     void FreeAllNodes() {
@@ -576,6 +645,7 @@ class AStarSearch {
 
         while (iterOpen != m_OpenList.end()) {
             Node* n = (*iterOpen);
+            n->heap_index = SIZE_MAX;
             FreeNode(n);
 
             iterOpen++;
@@ -608,6 +678,7 @@ class AStarSearch {
 
         while (iterOpen != m_OpenList.end()) {
             Node* n = (*iterOpen);
+            n->heap_index = SIZE_MAX;
 
             if (!n->child) {
                 FreeNode(n);
