@@ -23,6 +23,7 @@ The project uses a `makefile` to manage builds.
     *   `8puzzle`: Solves the 8-puzzle sliding tile game.
     *   `findpath`: Finds a path on a simple grid map.
     *   `minpathbucharest`: Solves the "classic" AI problem of finding the shortest path to Bucharest.
+    *   `bench`: Runs the 1,000,000-search grid benchmark.
     *   `tests`: Runs the unit tests.
 
 *   **Run Tests:**
