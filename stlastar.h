@@ -319,27 +319,28 @@ class AStarSearch {
                 // 3 - Sort heap again in open list
 
                 if (closedlist_result != m_ClosedList.end()) {
+                    Node* closed_node = *closedlist_result;
+
                     // Update closed node with successor node AStar data
-                    //*(*closedlist_result) = *(*successor);
-                    (*closedlist_result)->parent = (*successor)->parent;
-                    (*closedlist_result)->g = (*successor)->g;
-                    (*closedlist_result)->h = (*successor)->h;
-                    (*closedlist_result)->f = (*successor)->f;
+                    closed_node->parent = (*successor)->parent;
+                    closed_node->g = (*successor)->g;
+                    closed_node->h = (*successor)->h;
+                    closed_node->f = (*successor)->f;
 
                     // Free successor node
                     FreeNode((*successor));
 
-                    // Push closed node into open list
-                    (*closedlist_result)->heap_index = m_OpenList.size();
-                    m_OpenList.push_back((*closedlist_result));
-
                     // Remove closed node from closed list
                     m_ClosedList.erase(closedlist_result);
 
-                    siftUp((*closedlist_result)->heap_index);
+                    // Push closed node into open list
+                    closed_node->heap_index = m_OpenList.size();
+                    m_OpenList.push_back(closed_node);
+
+                    siftUp(closed_node->heap_index);
 
                     // Add to open set
-                    m_OpenSet.insert(*closedlist_result);
+                    m_OpenSet.insert(closed_node);
                     AssertHeapInvariants();
 
                     // Fix thanks to ...
@@ -354,17 +355,18 @@ class AStarSearch {
                 // 2 - sort heap again in open list
 
                 else if (openlist_result != m_OpenSet.end()) {
+                    Node* open_node = *openlist_result;
+
                     // Update open node with successor node AStar data
-                    //*(*openlist_result) = *(*successor);
-                    (*openlist_result)->parent = (*successor)->parent;
-                    (*openlist_result)->g = (*successor)->g;
-                    (*openlist_result)->h = (*successor)->h;
-                    (*openlist_result)->f = (*successor)->f;
+                    open_node->parent = (*successor)->parent;
+                    open_node->g = (*successor)->g;
+                    open_node->h = (*successor)->h;
+                    open_node->f = (*successor)->f;
 
                     // Free successor node
                     FreeNode((*successor));
 
-                    siftUp((*openlist_result)->heap_index);
+                    siftUp(open_node->heap_index);
                     AssertHeapInvariants();
                 }
 
