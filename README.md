@@ -91,6 +91,32 @@ For path finder
 pathfind has no arguments. You can edit the simple map in pathfind.cpp and the start 
 and goal co-ordinates to experiement with the pathfinder.
 
+#### Benchmark
+
+The `bench` executable benchmarks search performance across a large 2D grid:
+
+* **What it does**:
+  * Generates a 1000 x 1000 grid from a deterministic, hardcoded random seed (`12345`), placing 20% obstacles (impassable cells) and 80% passable terrain.
+  * Executes 1,000,000 searches between pseudo-randomly selected passable start and goal coordinates.
+  * Measures the total elapsed search time with `std::chrono::steady_clock` and calculates the average time per search (total time divided by 1,000,000).
+  * Because the random seed is fixed, the grid and the sequence of searches are completely reproducible across runs, making it an accurate baseline to benchmark optimizations to the `stlastar.h` implementation.
+  * Key parameters (`MAP_WIDTH`, `MAP_HEIGHT`, `RANDOM_SEED`, `NUM_SEARCHES`, and `OBSTACLE_PERCENTAGE`) are configured as module constants in `bench.cpp`.
+
+* **How to run**:
+  * Build the benchmark target:
+    ```bash
+    cmake --build [build folder] --target bench
+    ```
+  * Run the default benchmark (1,000,000 searches):
+    ```bash
+    ./[build folder]/bench
+    ```
+  * Run with an optional argument to specify fewer searches for quick iterations during development:
+    ```bash
+    # Run 10,000 searches instead of 1,000,000
+    ./[build folder]/bench 10000
+    ```
+
 #### Fixed size allocator
 
 FSA is just a simple memory pool that uses a doubly linked list of available nodes in an array. This is 

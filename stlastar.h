@@ -34,6 +34,7 @@ given where due.
 #include <cfloat>
 #include <unordered_set>
 #include <vector>
+#include <algorithm>
 
 // fast fixed size memory allocator, used for fast node memory management
 #include "fsa.h"
