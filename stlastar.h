@@ -26,15 +26,14 @@ given where due.
 #ifndef STLASTAR_H
 #define STLASTAR_H
 // used for text debugging
+#include <assert.h>
 #include <stdio.h>
 
-#include <assert.h>
-
 // stl includes
+#include <algorithm>
 #include <cfloat>
 #include <unordered_set>
 #include <vector>
-#include <algorithm>
 
 // fast fixed size memory allocator, used for fast node memory management
 #include "fsa.h"
@@ -153,6 +152,8 @@ class AStarSearch {
         // Sort back element into heap
         push_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
 
+        m_OpenSet.insert(m_Start);
+
         // Initialise counter for search steps
         m_Steps = 0;
     }
@@ -183,6 +184,7 @@ class AStarSearch {
         Node* n = m_OpenList.front();  // get pointer to the node
         pop_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
         m_OpenList.pop_back();
+        m_OpenSet.erase(n);
 
         // Check for the goal, once we pop that we're done
         if (n->m_UserState.IsGoal(m_Goal->m_UserState)) {
@@ -257,18 +259,10 @@ class AStarSearch {
                 // If it is but the node that is already on them is better (lower g)
                 // then we can forget about this successor
 
-                // First linear search of open list to find node
+                typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator openlist_result;
+                openlist_result = m_OpenSet.find(*successor);
 
-                typename std::vector<Node*>::iterator openlist_result;
-
-                for (openlist_result = m_OpenList.begin(); openlist_result != m_OpenList.end();
-                     openlist_result++) {
-                    if ((*openlist_result)->m_UserState.IsSameState((*successor)->m_UserState)) {
-                        break;
-                    }
-                }
-
-                if (openlist_result != m_OpenList.end()) {
+                if (openlist_result != m_OpenSet.end()) {
                     // we found this state on open
 
                     if ((*openlist_result)->g <= newg) {
@@ -327,6 +321,9 @@ class AStarSearch {
                     // Sort back element into heap
                     push_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
 
+                    // Add to open set
+                    m_OpenSet.insert(*closedlist_result);
+
                     // Fix thanks to ...
                     // Greg Douglas <gregdouglasmail@gmail.com>
                     // who noticed that this code path was incorrect
@@ -338,7 +335,7 @@ class AStarSearch {
                 // 1 - Update old version of this node in open list
                 // 2 - sort heap again in open list
 
-                else if (openlist_result != m_OpenList.end()) {
+                else if (openlist_result != m_OpenSet.end()) {
                     // Update open node with successor node AStar data
                     //*(*openlist_result) = *(*successor);
                     (*openlist_result)->parent = (*successor)->parent;
@@ -366,6 +363,9 @@ class AStarSearch {
 
                     // Sort back element into heap
                     push_heap(m_OpenList.begin(), m_OpenList.end(), HeapCompare_f());
+
+                    // Add to open set
+                    m_OpenSet.insert(*successor);
                 }
             }
 
@@ -582,6 +582,7 @@ class AStarSearch {
         }
 
         m_OpenList.clear();
+        m_OpenSet.clear();
 
         // iterate closed list and delete unused nodes
         typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
@@ -618,6 +619,7 @@ class AStarSearch {
         }
 
         m_OpenList.clear();
+        m_OpenSet.clear();
 
         // iterate closed list and delete unused nodes
         typename std::unordered_set<Node*, NodeHash, NodeEqual>::iterator iterClosed;
@@ -679,6 +681,7 @@ class AStarSearch {
         }
     };
     std::unordered_set<Node*, NodeHash, NodeEqual> m_ClosedList;
+    std::unordered_set<Node*, NodeHash, NodeEqual> m_OpenSet;
 
     // Successors is a vector filled out by the user each type successors to a node
     // are generated
