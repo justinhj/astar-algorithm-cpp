@@ -23,6 +23,7 @@ Looking for a C# version? Checkout the companion repository [astar-algorithm-csh
 
 [v1.3.1](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.3.1) 
 Bug fixes, safety hardening, and codebase modernization:
+- Fixed use-after-erase iterator bug in `SearchStep()` when reopening nodes from the closed list.
 - Guarded `FreeSolutionNodes()` against failed or uninitialized searches to eliminate potential use-after-free.
 - Updated `~FixedSizeAllocator` to properly invoke destructors on live objects, avoiding resource leaks when states hold non-trivial members.
 - Added double-free, alignment, and bounds validation to `FixedSizeAllocator::free()`.

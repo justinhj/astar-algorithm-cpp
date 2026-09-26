@@ -317,3 +317,63 @@ TEST_CASE("FixedSizeAllocator Guard Against Double Free") {
     allocator.free(p2);
 }
 
+class ReopenTestNode {
+   public:
+    int id;
+    ReopenTestNode() : id(0) {}
+    ReopenTestNode(int _id) : id(_id) {}
+
+    float GoalDistanceEstimate(ReopenTestNode& goal) {
+        if (id == 1) return 1.0f;   // B: heuristic 1 -> f = 10 + 1 = 11
+        if (id == 2) return 12.0f;  // C: heuristic 12 -> f = 1 + 12 = 13
+        if (id == 3) return 0.0f;   // Goal G
+        return 10.0f;
+    }
+    bool IsGoal(ReopenTestNode& goal) { return id == goal.id; }
+    bool GetSuccessors(AStarSearch<ReopenTestNode>* astar, ReopenTestNode* parent) {
+        if (id == 0) {  // A -> B (cost 10), A -> C (cost 1)
+            ReopenTestNode b(1), c(2);
+            astar->AddSuccessor(b);
+            astar->AddSuccessor(c);
+        } else if (id == 1) {  // B -> G (cost 100)
+            ReopenTestNode g(3);
+            astar->AddSuccessor(g);
+        } else if (id == 2) {  // C -> B (cost 1) which reopens B with cheaper cost (g=2 < 10)
+            ReopenTestNode b(1);
+            astar->AddSuccessor(b);
+        }
+        return true;
+    }
+    float GetCost(ReopenTestNode& successor) {
+        if (id == 0 && successor.id == 1) return 10.0f;
+        if (id == 0 && successor.id == 2) return 1.0f;
+        if (id == 2 && successor.id == 1) return 1.0f;
+        if (id == 1 && successor.id == 3) return 100.0f;
+        return 1.0f;
+    }
+    bool IsSameState(ReopenTestNode& rhs) { return id == rhs.id; }
+    size_t Hash() { return std::hash<int>{}(id); }
+};
+
+TEST_CASE("Reopen Node From Closed List When Cheaper Path Found") {
+    AStarSearch<ReopenTestNode> astar;
+    ReopenTestNode start(0);
+    ReopenTestNode goal(3);
+
+    astar.SetStartAndGoalStates(start, goal);
+
+    unsigned int state;
+    do {
+        state = astar.SearchStep();
+    } while (state == AStarSearch<ReopenTestNode>::SEARCH_STATE_SEARCHING);
+
+    CHECK(state == AStarSearch<ReopenTestNode>::SEARCH_STATE_SUCCEEDED);
+    // Path should be A(0) -> C(2) -> B(1) -> G(3) with total cost 1 + 1 + 100 = 102
+    // rather than A(0) -> B(1) -> G(3) with cost 10 + 100 = 110
+    CHECK(astar.GetSolutionCost() == doctest::Approx(102.0f));
+
+    astar.FreeSolutionNodes();
+    astar.EnsureMemoryFreed();
+}
+
+
