@@ -26,14 +26,14 @@ given where due.
 #ifndef STLASTAR_H
 #define STLASTAR_H
 // used for text debugging
-#include <assert.h>
 #include <stdio.h>
+#include <assert.h>
 
 // stl includes
-#include <algorithm>
 #include <cfloat>
 #include <unordered_set>
 #include <vector>
+#include <algorithm>
 
 // fast fixed size memory allocator, used for fast node memory management
 #include "fsa.h"
