@@ -45,6 +45,8 @@ given where due.
 #ifndef FSA_H
 #define FSA_H
 
+#include <assert.h>
+#include <cstdint>
 #include <stdio.h>
 #include <string.h>
 
@@ -62,11 +64,15 @@ class FixedSizeAllocator {
 
         FSA_ELEMENT* pPrev;
         FSA_ELEMENT* pNext;
+        bool bAllocated;
     };
 
    public:  // methods
     FixedSizeAllocator(unsigned int MaxElements = FSA_DEFAULT_SIZE)
-        : m_pFirstUsed(NULL), m_MaxElements(MaxElements) {
+        : m_pFirstFree(nullptr),
+          m_pFirstUsed(nullptr),
+          m_MaxElements(MaxElements),
+          m_pMemory(nullptr) {
         // Allocate enough memory for the maximum number of elements
 
         char* pMem = new char[m_MaxElements * sizeof(FSA_ELEMENT)];
@@ -86,27 +92,40 @@ class FixedSizeAllocator {
         for (unsigned int i = 0; i < m_MaxElements; i++) {
             pElement->pPrev = pElement - 1;
             pElement->pNext = pElement + 1;
+            pElement->bAllocated = false;
 
             pElement++;
         }
 
         // first element should have a null prev
-        m_pFirstFree->pPrev = NULL;
+        m_pFirstFree->pPrev = nullptr;
         // last element should have a null next
-        (pElement - 1)->pNext = NULL;
+        (pElement - 1)->pNext = nullptr;
     }
 
     ~FixedSizeAllocator() {
+        // Destroy any live objects remaining on the used list
+        FSA_ELEMENT* pNode = m_pFirstUsed;
+        while (pNode) {
+            FSA_ELEMENT* pNext = pNode->pNext;
+            pNode->UserType.~USER_TYPE();
+            pNode->bAllocated = false;
+            pNode = pNext;
+        }
+        m_pFirstUsed = nullptr;
+
         // Free up the memory
         delete[] (char*)m_pMemory;
+        m_pMemory = nullptr;
+        m_pFirstFree = nullptr;
     }
 
     // Allocate a new USER_TYPE and return a pointer to it
     USER_TYPE* alloc() {
-        FSA_ELEMENT* pNewNode = NULL;
+        FSA_ELEMENT* pNewNode = nullptr;
 
         if (!m_pFirstFree) {
-            return NULL;
+            return nullptr;
         } else {
             pNewNode = m_pFirstFree;
             m_pFirstFree = pNewNode->pNext;
@@ -114,33 +133,50 @@ class FixedSizeAllocator {
             // if the new node points to another free node then
             // change that nodes prev free pointer...
             if (pNewNode->pNext) {
-                pNewNode->pNext->pPrev = NULL;
+                pNewNode->pNext->pPrev = nullptr;
             }
 
             // node is now on the used list
 
-            pNewNode->pPrev = NULL;  // the allocated node is always first in the list
+            pNewNode->pPrev = nullptr;  // the allocated node is always first in the list
 
-            if (m_pFirstUsed == NULL) {
-                pNewNode->pNext = NULL;  // no other nodes
+            if (m_pFirstUsed == nullptr) {
+                pNewNode->pNext = nullptr;  // no other nodes
             } else {
                 m_pFirstUsed->pPrev = pNewNode;  // insert this at the head of the used list
                 pNewNode->pNext = m_pFirstUsed;
             }
 
             m_pFirstUsed = pNewNode;
+            pNewNode->bAllocated = true;
         }
 
         return reinterpret_cast<USER_TYPE*>(pNewNode);
     }
 
     // Free the given user type
-    // For efficiency I don't check whether the user_data is a valid
-    // pointer that was allocated. I may add some debug only checking
-    // (To add the debug check you'd need to make sure the pointer is in
-    // the m_pMemory area and is pointing at the start of a node)
+    // Guarded against invalid pointer, out of bounds, and double-free
     void free(USER_TYPE* user_data) {
+        if (!user_data) {
+            return;
+        }
+
         FSA_ELEMENT* pNode = reinterpret_cast<FSA_ELEMENT*>(user_data);
+
+        // Verify the pointer was allocated from this allocator
+        assert(pNode >= m_pMemory && pNode < m_pMemory + m_MaxElements);
+        assert(((uintptr_t)((char*)pNode - (char*)m_pMemory) % sizeof(FSA_ELEMENT)) == 0);
+        if (pNode < m_pMemory || pNode >= m_pMemory + m_MaxElements ||
+            ((uintptr_t)((char*)pNode - (char*)m_pMemory) % sizeof(FSA_ELEMENT)) != 0) {
+            return;
+        }
+
+        // Guard against double-free
+        assert(pNode->bAllocated);
+        if (!pNode->bAllocated) {
+            return;
+        }
+        pNode->bAllocated = false;
 
         // manage used list, remove this node from it
         if (pNode->pPrev) {
@@ -155,11 +191,11 @@ class FixedSizeAllocator {
         }
 
         // add to free list
-        if (m_pFirstFree == NULL) {
+        if (m_pFirstFree == nullptr) {
             // free list was empty
             m_pFirstFree = pNode;
-            pNode->pPrev = NULL;
-            pNode->pNext = NULL;
+            pNode->pPrev = nullptr;
+            pNode->pNext = nullptr;
         } else {
             // Add this node at the start of the free list
             m_pFirstFree->pPrev = pNode;
@@ -174,7 +210,7 @@ class FixedSizeAllocator {
 
         FSA_ELEMENT* p = m_pFirstFree;
         while (p) {
-            printf("%x!%x ", p->pPrev, p->pNext);
+            printf("%p!%p ", (void*)p->pPrev, (void*)p->pNext);
             p = p->pNext;
         }
         printf("\n");
@@ -183,7 +219,7 @@ class FixedSizeAllocator {
 
         p = m_pFirstUsed;
         while (p) {
-            printf("%x!%x ", p->pPrev, p->pNext);
+            printf("%p!%p ", (void*)p->pPrev, (void*)p->pNext);
             p = p->pNext;
         }
         printf("\n");
@@ -196,6 +232,9 @@ class FixedSizeAllocator {
     }
 
     USER_TYPE* GetNext(USER_TYPE* node) {
+        if (!node) {
+            return nullptr;
+        }
         return reinterpret_cast<USER_TYPE*>((reinterpret_cast<FSA_ELEMENT*>(node))->pNext);
     }
 

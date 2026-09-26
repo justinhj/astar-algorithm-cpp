@@ -8,6 +8,7 @@ include(FetchContent)
 FetchContent_Declare(
     doctest
     URL https://raw.githubusercontent.com/doctest/doctest/v2.4.11/doctest/doctest.h
+    URL_HASH SHA256=44faa038e9c3f9728efbda143748d01124ea0a27f4bf78f35a15d8fab2e039fb
     DOWNLOAD_NO_EXTRACT TRUE
 )
 FetchContent_MakeAvailable(doctest)

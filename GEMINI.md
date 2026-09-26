@@ -10,14 +10,15 @@ The core logic resides in `stlastar.h`, which uses C++ templates to work with an
 
 ### Prerequisites
 *   C++ compiler supporting C++11 (e.g., `g++`, `clang++`).
-*   `make` utility.
+*   CMake 3.20 or newer.
 
 ### Build Commands
-The project uses a `makefile` to manage builds.
+The project uses CMake to configure and build.
 
 *   **Build All:**
     ```bash
-    make
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
     ```
     This compiles the library examples and tests, producing the following executables:
     *   `8puzzle`: Solves the 8-puzzle sliding tile game.
@@ -28,12 +29,14 @@ The project uses a `makefile` to manage builds.
 
 *   **Run Tests:**
     ```bash
-    make test
+    ctest --test-dir build --output-on-failure
+    # or run directly: ./build/tests
     ```
 
 *   **Clean Build:**
     ```bash
-    make clean
+    cmake --build build --target clean
+    # or: rm -rf build
     ```
 
 ### Running Examples
@@ -89,5 +92,5 @@ public:
 6.  Call `astarsearch.FreeSolutionNodes()` and `astarsearch.EnsureMemoryFreed()` to clean up.
 
 ### Testing
-*   Tests are located in `tests.cpp`.
-*   Ensure all tests pass with `make test` before submitting changes.
+*   Tests are located in `tests.cpp` using the `doctest` framework.
+*   Ensure all tests pass with `ctest --test-dir build --output-on-failure` (or `./build/tests`) before submitting changes.
