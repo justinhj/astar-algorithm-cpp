@@ -49,9 +49,6 @@ given where due.
 #pragma warning(disable : 4786)
 #endif
 
-template <class T>
-class AStarState;
-
 // The AStar search class. UserState is the users state space type
 template <class UserState>
 class AStarSearch {
@@ -80,7 +77,13 @@ class AStarSearch {
 
         size_t heap_index;  // index in m_OpenList, or SIZE_MAX when not on the heap
 
-        Node() : parent(0), child(0), g(0.0f), h(0.0f), f(0.0f), heap_index(SIZE_MAX) {}
+        Node()
+            : parent(nullptr),
+              child(nullptr),
+              g(0.0f),
+              h(0.0f),
+              f(0.0f),
+              heap_index(SIZE_MAX) {}
 
         bool operator==(const Node& otherNode) const {
             return this->m_UserState.IsSameState(otherNode.m_UserState);
@@ -103,22 +106,26 @@ class AStarSearch {
     // constructor just initialises private data
     AStarSearch()
         : m_State(SEARCH_STATE_NOT_INITIALISED),
-          m_CurrentSolutionNode(NULL),
+          m_CurrentSolutionNode(nullptr),
 #if USE_FSA_MEMORY
           m_FixedSizeAllocator(1000),
 #endif
           m_AllocateNodeCount(0),
-          m_CancelRequest(false) {
+          m_CancelRequest(false),
+          m_Start(nullptr),
+          m_Goal(nullptr) {
     }
 
     AStarSearch(int MaxNodes)
         : m_State(SEARCH_STATE_NOT_INITIALISED),
-          m_CurrentSolutionNode(NULL),
+          m_CurrentSolutionNode(nullptr),
 #if USE_FSA_MEMORY
           m_FixedSizeAllocator(MaxNodes),
 #endif
           m_AllocateNodeCount(0),
-          m_CancelRequest(false) {
+          m_CancelRequest(false),
+          m_Start(nullptr),
+          m_Goal(nullptr) {
     }
 
     // call at any time to cancel the search and free up all the memory
@@ -133,7 +140,7 @@ class AStarSearch {
         m_Start = AllocateNode();
         m_Goal = AllocateNode();
 
-        assert((m_Start != NULL && m_Goal != NULL));
+        assert((m_Start != nullptr && m_Goal != nullptr));
 
         m_Start->m_UserState = Start;
         m_Goal->m_UserState = Goal;
@@ -146,7 +153,7 @@ class AStarSearch {
         m_Start->g = 0;
         m_Start->h = m_Start->m_UserState.GoalDistanceEstimate(m_Goal->m_UserState);
         m_Start->f = m_Start->g + m_Start->h;
-        m_Start->parent = 0;
+        m_Start->parent = nullptr;
 
         // Push the start node on the Open list
 
@@ -197,9 +204,11 @@ class AStarSearch {
         // Check for the goal, once we pop that we're done
         if (n->m_UserState.IsGoal(m_Goal->m_UserState)) {
             // The user is going to use the Goal Node he passed in
-            // so copy the parent pointer of n
+            // so copy the parent pointer and costs of n
             m_Goal->parent = n->parent;
             m_Goal->g = n->g;
+            m_Goal->h = n->h;
+            m_Goal->f = n->f;
 
             // A special case is that the goal was passed in as the start state
             // so handle that here
@@ -236,7 +245,7 @@ class AStarSearch {
             // User provides this functions and uses AddSuccessor to add each successor of
             // node 'n' to m_Successors
             bool ret =
-                n->m_UserState.GetSuccessors(this, n->parent ? &n->parent->m_UserState : NULL);
+                n->m_UserState.GetSuccessors(this, n->parent ? &n->parent->m_UserState : nullptr);
 
             if (!ret) {
                 typename std::vector<Node*>::iterator successor;
@@ -405,6 +414,10 @@ class AStarSearch {
     // This is done to clean up all used Node memory when you are done with the
     // search
     void FreeSolutionNodes() {
+        if (m_State != SEARCH_STATE_SUCCEEDED || m_Start == nullptr) {
+            return;
+        }
+
         Node* n = m_Start;
 
         if (m_Start->child) {
@@ -413,7 +426,7 @@ class AStarSearch {
                 n = n->child;
                 FreeNode(del);
 
-                del = NULL;
+                del = nullptr;
 
             } while (n != m_Goal);
 
@@ -425,6 +438,9 @@ class AStarSearch {
             FreeNode(m_Start);
             FreeNode(m_Goal);
         }
+
+        m_Start = nullptr;
+        m_Goal = nullptr;
     }
 
     // Functions for traversing the solution
@@ -435,7 +451,7 @@ class AStarSearch {
         if (m_Start) {
             return &m_Start->m_UserState;
         } else {
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -451,7 +467,7 @@ class AStarSearch {
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     // Get end node
@@ -460,7 +476,7 @@ class AStarSearch {
         if (m_Goal) {
             return &m_Goal->m_UserState;
         } else {
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -476,7 +492,7 @@ class AStarSearch {
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     // Get final cost of solution
@@ -506,7 +522,7 @@ class AStarSearch {
             return &(*iterDbgOpen)->m_UserState;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     UserState* GetOpenListNext() {
@@ -523,7 +539,7 @@ class AStarSearch {
             return &(*iterDbgOpen)->m_UserState;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     UserState* GetClosedListStart() {
@@ -541,7 +557,7 @@ class AStarSearch {
             return &(*iterDbgClosed)->m_UserState;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     UserState* GetClosedListNext() {
@@ -559,7 +575,7 @@ class AStarSearch {
             return &(*iterDbgClosed)->m_UserState;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     // Get the number of steps
@@ -667,6 +683,9 @@ class AStarSearch {
         // delete the goal
 
         FreeNode(m_Goal);
+
+        m_Start = nullptr;
+        m_Goal = nullptr;
     }
 
     // This call is made by the search class when the search ends. A lot of nodes may be
@@ -683,7 +702,7 @@ class AStarSearch {
             if (!n->child) {
                 FreeNode(n);
 
-                n = NULL;
+                n = nullptr;
             }
 
             iterOpen++;
@@ -700,7 +719,7 @@ class AStarSearch {
 
             if (!n->child) {
                 FreeNode(n);
-                n = NULL;
+                n = nullptr;
             }
         }
 
@@ -717,7 +736,7 @@ class AStarSearch {
         Node* address = m_FixedSizeAllocator.alloc();
 
         if (!address) {
-            return NULL;
+            return nullptr;
         }
         m_AllocateNodeCount++;
         Node* p = new (address) Node;
@@ -784,23 +803,6 @@ class AStarSearch {
     int m_AllocateNodeCount;
 
     bool m_CancelRequest;
-};
-
-template <class T>
-class AStarState {
-   public:
-    virtual ~AStarState() {}
-    virtual float GoalDistanceEstimate(
-        T& nodeGoal) = 0;  // Heuristic function which computes the estimated cost to the goal node
-    virtual bool IsGoal(T& nodeGoal) = 0;  // Returns true if this node is the goal node
-    virtual bool GetSuccessors(
-        AStarSearch<T>* astarsearch,
-        T* parent_node) = 0;  // Retrieves all successors to this node and adds them via
-                              // astarsearch.addSuccessor()
-    virtual float GetCost(
-        T& successor) = 0;  // Computes the cost of travelling from this node to the successor node
-    virtual bool IsSameState(T& rhs) = 0;  // Returns true if this node is the same as the rhs node
-    virtual size_t Hash() = 0;             // Returns a hash for the state
 };
 
 #endif

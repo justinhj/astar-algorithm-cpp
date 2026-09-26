@@ -21,6 +21,17 @@ Looking for a C# version? Checkout the companion repository [astar-algorithm-csh
 
 ### Release notes
 
+[v1.3.1](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.3.1) 
+Bug fixes, safety hardening, and codebase modernization:
+- Guarded `FreeSolutionNodes()` against failed or uninitialized searches to eliminate potential use-after-free.
+- Updated `~FixedSizeAllocator` to properly invoke destructors on live objects, avoiding resource leaks when states hold non-trivial members.
+- Added double-free, alignment, and bounds validation to `FixedSizeAllocator::free()`.
+- Fixed 64-bit pointer format specifiers (`%p`) in `fsa.h` `Debug()`.
+- Ensured goal node heuristic (`h`) and total cost (`f`) are properly populated upon search success.
+- Replaced legacy `NULL` and `0` pointer literals with C++11 `nullptr` across all headers.
+- Removed unused `AStarState` dead code and retired `.travis.yml`.
+- Secured `doctest` download with SHA256 `URL_HASH` in CMake.
+
 [v1.3](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.3) 
 Performance optimizations for the open list and addition of a reproducible benchmark suite:
 - Open list state membership lookup is now O(1) using an `unordered_set`, eliminating the previous O(N) linear search per successor.

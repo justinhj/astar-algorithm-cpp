@@ -217,3 +217,103 @@ TEST_CASE("Map Search") {
         CHECK(SearchSteps == 227);
     }
 }
+
+TEST_CASE("FreeSolutionNodes After Failed Search") {
+    AStarSearch<MapSearchNode> astarsearch;
+
+    MapSearchNode nodeStart(0, 0);
+    // (1, 1) has terrain value 9 (obstacle), which can never be reached
+    MapSearchNode nodeEnd(1, 1);
+
+    astarsearch.SetStartAndGoalStates(nodeStart, nodeEnd);
+
+    unsigned int SearchState;
+    do {
+        SearchState = astarsearch.SearchStep();
+    } while (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
+
+    CHECK(SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_FAILED);
+
+    // Calling FreeSolutionNodes after a failed search must be safe and not cause use-after-free
+    astarsearch.FreeSolutionNodes();
+    // Idempotent call
+    astarsearch.FreeSolutionNodes();
+
+    astarsearch.EnsureMemoryFreed();
+}
+
+TEST_CASE("Goal Node Costs Populated On Success") {
+    AStarSearch<MapSearchNode> astarsearch;
+
+    MapSearchNode nodeStart(0, 0);
+    // (5, 0) is along row 0 and is reachable from (0, 0)
+    MapSearchNode nodeEnd(5, 0);
+
+    astarsearch.SetStartAndGoalStates(nodeStart, nodeEnd);
+
+    unsigned int SearchState;
+    do {
+        SearchState = astarsearch.SearchStep();
+    } while (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
+
+    CHECK(SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED);
+    CHECK(astarsearch.GetSolutionCost() > 0.0f);
+
+    MapSearchNode* goalNode = astarsearch.GetSolutionEnd();
+    REQUIRE(goalNode != nullptr);
+    CHECK(goalNode->x == 5);
+    CHECK(goalNode->y == 0);
+
+    astarsearch.FreeSolutionNodes();
+    astarsearch.EnsureMemoryFreed();
+}
+
+struct DestructorTracker {
+    static int alive_count;
+    DestructorTracker() { alive_count++; }
+    ~DestructorTracker() { alive_count--; }
+};
+int DestructorTracker::alive_count = 0;
+
+TEST_CASE("FixedSizeAllocator Destructor Cleans Up Live Objects") {
+    DestructorTracker::alive_count = 0;
+    {
+        FixedSizeAllocator<DestructorTracker> allocator(10);
+        DestructorTracker* a = allocator.alloc();
+        new (a) DestructorTracker();
+
+        DestructorTracker* b = allocator.alloc();
+        new (b) DestructorTracker();
+
+        DestructorTracker* c = allocator.alloc();
+        new (c) DestructorTracker();
+
+        CHECK(DestructorTracker::alive_count == 3);
+
+        // Manually destroy and free 'b'
+        b->~DestructorTracker();
+        allocator.free(b);
+        CHECK(DestructorTracker::alive_count == 2);
+
+        // 'a' and 'c' are still alive in the allocator.
+        // When allocator goes out of scope, ~FixedSizeAllocator must destroy 'a' and 'c'.
+    }
+    CHECK(DestructorTracker::alive_count == 0);
+}
+
+TEST_CASE("FixedSizeAllocator Guard Against Double Free") {
+    FixedSizeAllocator<int> allocator(5);
+    int* p = allocator.alloc();
+    CHECK(p != nullptr);
+
+    allocator.free(p);
+
+    // Freeing nullptr should be safe
+    allocator.free(nullptr);
+
+    // After freeing, allocating again should work normally
+    int* p2 = allocator.alloc();
+    CHECK(p2 != nullptr);
+    allocator.free(p2);
+}
+
