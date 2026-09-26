@@ -21,6 +21,12 @@ Looking for a C# version? Checkout the companion repository [astar-algorithm-csh
 
 ### Release notes
 
+[v1.3](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.3) 
+Performance optimizations for the open list and addition of a reproducible benchmark suite:
+- Open list state membership lookup is now O(1) using an `unordered_set`, eliminating the previous O(N) linear search per successor.
+- The open list binary heap is now an indexed heap with each node tracking its `heap_index`, replacing O(N) `std::make_heap` operations on decrease-key with O(log N) sift-up operations.
+- Added a 1,000,000-search reproducible 2D grid benchmark (`bench.cpp`) and modernized unit testing with doctest.
+
 [v1.2](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.2) 
 Breaking changes! C++ 11 is now the minimum required C++ standard.
 User is now required to provide a Hash function for their Node type. Thanks to a contribution from @btdubs the closed 
