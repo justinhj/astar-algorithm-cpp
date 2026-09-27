@@ -51,8 +51,8 @@ bool MapSearchNode::IsSameState(MapSearchNode& rhs) {
 }
 
 size_t MapSearchNode::Hash() {
-    size_t h1 = std::hash<float>{}(static_cast<float>(x));
-    size_t h2 = std::hash<float>{}(static_cast<float>(y));
+    size_t h1 = std::hash<int>{}(x);
+    size_t h2 = std::hash<int>{}(y);
     return h1 ^ (h2 << 1);
 }
 

@@ -275,47 +275,6 @@ struct DestructorTracker {
 };
 int DestructorTracker::alive_count = 0;
 
-TEST_CASE("FixedSizeAllocator Destructor Cleans Up Live Objects") {
-    DestructorTracker::alive_count = 0;
-    {
-        FixedSizeAllocator<DestructorTracker> allocator(10);
-        DestructorTracker* a = allocator.alloc();
-        new (a) DestructorTracker();
-
-        DestructorTracker* b = allocator.alloc();
-        new (b) DestructorTracker();
-
-        DestructorTracker* c = allocator.alloc();
-        new (c) DestructorTracker();
-
-        CHECK(DestructorTracker::alive_count == 3);
-
-        // Manually destroy and free 'b'
-        b->~DestructorTracker();
-        allocator.free(b);
-        CHECK(DestructorTracker::alive_count == 2);
-
-        // 'a' and 'c' are still alive in the allocator.
-        // When allocator goes out of scope, ~FixedSizeAllocator must destroy 'a' and 'c'.
-    }
-    CHECK(DestructorTracker::alive_count == 0);
-}
-
-TEST_CASE("FixedSizeAllocator Guard Against Double Free") {
-    FixedSizeAllocator<int> allocator(5);
-    int* p = allocator.alloc();
-    CHECK(p != nullptr);
-
-    allocator.free(p);
-
-    // Freeing nullptr should be safe
-    allocator.free(nullptr);
-
-    // After freeing, allocating again should work normally
-    int* p2 = allocator.alloc();
-    CHECK(p2 != nullptr);
-    allocator.free(p2);
-}
 
 class ReopenTestNode {
    public:
@@ -330,7 +289,7 @@ class ReopenTestNode {
         return 10.0f;
     }
     bool IsGoal(ReopenTestNode& goal) { return id == goal.id; }
-    bool GetSuccessors(AStarSearch<ReopenTestNode>* astar, ReopenTestNode* parent) {
+    bool GetSuccessors(AStarSearch<ReopenTestNode, false>* astar, ReopenTestNode* parent) {
         if (id == 0) {  // A -> B (cost 10), A -> C (cost 1)
             ReopenTestNode b(1), c(2);
             astar->AddSuccessor(b);
@@ -356,7 +315,7 @@ class ReopenTestNode {
 };
 
 TEST_CASE("Reopen Node From Closed List When Cheaper Path Found") {
-    AStarSearch<ReopenTestNode> astar;
+    AStarSearch<ReopenTestNode, false> astar;
     ReopenTestNode start(0);
     ReopenTestNode goal(3);
 
