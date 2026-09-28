@@ -10,6 +10,8 @@ On the 100,000-search grid benchmark (`bench.cpp`):
 
 This represents a **~40% performance improvement** overall.
 
+These historical measurements used the former 1,000-node allocator limit. On the 1000 x 1000 grid, that limit could cut searches short, so these timings should not be treated as measurements of completed searches. The benchmark now allocates enough nodes for the full grid; its results should be measured again before comparing performance.
+
 ## Applied Optimizations
 
 ### 1. Merged Open and Closed Data Structures

@@ -130,7 +130,8 @@ int main(int argc, char* argv[]) {
     std::cout << "Running benchmark..." << std::endl;
 
     // 2. Perform searches
-    AStarSearch<MapSearchNode> astarsearch;
+    // Allow one node for every grid cell, plus the separate goal node.
+    AStarSearch<MapSearchNode> astarsearch(MAP_WIDTH * MAP_HEIGHT + 1);
 
     unsigned int successes = 0;
     unsigned int failures = 0;
