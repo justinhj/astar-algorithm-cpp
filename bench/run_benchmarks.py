@@ -43,8 +43,8 @@ def main():
             # 1. Checkout commit
             run_cmd(f"git checkout {commit_hash}")
 
-            # 2. Inject modern bench.cpp
-            run_cmd("cp /tmp/new_bench.cpp bench.cpp")
+            # 2. Inject modern bench.cpp (from optimizations-2)
+            run_cmd(f"git checkout {original_branch} -- bench.cpp")
 
             # 3. Build release binary
             print("Building bench target...")
