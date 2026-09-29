@@ -21,6 +21,15 @@ Looking for a C# version? Checkout the companion repository [astar-algorithm-csh
 
 ### Release notes
 
+[v1.4](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.4)
+Major performance optimizations, memory reduction, and allocator overhaul:
+- Merged open set (`m_OpenSet`) and closed list (`m_ClosedList`) into a single unified `m_NodeMap`, halving hash table lookups and inserts per node expansion.
+- Repurposed intrusive `heap_index` on `Node` as the open vs. closed state discriminator (`heap_index == SIZE_MAX` implies closed), enabling $O(1)$ state transitions with zero container transfers.
+- Replaced eager successor buffering (`m_Successors`) with inline streaming evaluation and stack probes, deferring `AllocateNode()` so duplicate/rejected neighbors allocate zero memory.
+- Added `ConsistentHeuristic = true` template argument (`template <class UserState, bool ConsistentHeuristic = true>`) to bypass redundant closed-list cost evaluations for monotonic heuristics.
+- Overhauled `fsa.h` to use a lean, singly-linked free list, eliminating the unused used-list tracking overhead.
+- Fixed coordinate hashing in benchmark and sample grid codes from `std::hash<float>` to `std::hash<int>`.
+
 [v1.3.1](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.3.1) 
 Bug fixes, safety hardening, and codebase modernization:
 - Fixed use-after-erase iterator bug in `SearchStep()` when reopening nodes from the closed list.
