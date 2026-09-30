@@ -15,7 +15,7 @@
 const int MAP_WIDTH = 1000;
 const int MAP_HEIGHT = 1000;
 const unsigned int RANDOM_SEED = 12345;
-const unsigned int NUM_SEARCHES = 1000000;
+const unsigned int NUM_SEARCHES = 1000;
 const int OBSTACLE_PERCENTAGE = 20;  // 20% obstacles (value 9), 80% passable terrain (value 1)
 
 // The world map
