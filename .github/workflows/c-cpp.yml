@@ -20,3 +20,6 @@ jobs:
     - name: Test
       working-directory: ./build
       run: ./tests
+    - name: Run Examples
+      working-directory: ./build
+      run: ./findpath && ./minpathbucharest && ./8puzzle 013824765
