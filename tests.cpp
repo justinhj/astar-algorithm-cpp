@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <memory>
 
 #include "stlastar.h"
 
@@ -275,6 +276,27 @@ struct DestructorTracker {
 };
 int DestructorTracker::alive_count = 0;
 
+struct TrackedUserState {
+    int id;
+    std::shared_ptr<DestructorTracker> tracker;
+
+    TrackedUserState() : id(0), tracker(std::make_shared<DestructorTracker>()) {}
+    TrackedUserState(int _id) : id(_id), tracker(std::make_shared<DestructorTracker>()) {}
+
+    float GoalDistanceEstimate(TrackedUserState& goal) { return (float)std::abs(id - goal.id); }
+    bool IsGoal(TrackedUserState& goal) { return id == goal.id; }
+    bool GetSuccessors(AStarSearch<TrackedUserState>* astar, TrackedUserState* parent) {
+        if (id < 3) {
+            TrackedUserState next(id + 1);
+            astar->AddSuccessor(next);
+        }
+        return true;
+    }
+    float GetCost(TrackedUserState& successor) { return 1.0f; }
+    bool IsSameState(TrackedUserState& rhs) { return id == rhs.id; }
+    size_t Hash() { return std::hash<int>{}(id); }
+};
+
 
 class ReopenTestNode {
    public:
@@ -354,6 +376,38 @@ TEST_CASE("Start Node Equals Goal Node") {
 
     astar.FreeSolutionNodes();
     astar.EnsureMemoryFreed();
+}
+
+TEST_CASE("AStarSearch Destructor Cleans Up Live Nodes On Scope Exit Without Manual Free") {
+    DestructorTracker::alive_count = 0;
+    {
+        AStarSearch<TrackedUserState> astar;
+        TrackedUserState start(0);
+        TrackedUserState goal(2);
+        astar.SetStartAndGoalStates(start, goal);
+
+        unsigned int state;
+        do {
+            state = astar.SearchStep();
+        } while (state == AStarSearch<TrackedUserState>::SEARCH_STATE_SEARCHING);
+
+        CHECK(state == AStarSearch<TrackedUserState>::SEARCH_STATE_SUCCEEDED);
+        // FreeSolutionNodes() is intentionally NOT called here to test destructor RAII cleanup
+    }
+    CHECK(DestructorTracker::alive_count == 0);
+}
+
+TEST_CASE("AStarSearch Destructor Cleans Up Unfinished Search On Scope Exit") {
+    DestructorTracker::alive_count = 0;
+    {
+        AStarSearch<TrackedUserState> astar;
+        TrackedUserState start(0);
+        TrackedUserState goal(2);
+        astar.SetStartAndGoalStates(start, goal);
+        // Execute only one step; search remains in progress
+        astar.SearchStep();
+    }
+    CHECK(DestructorTracker::alive_count == 0);
 }
 
 

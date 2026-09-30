@@ -3,6 +3,13 @@
   Copyright 2001 Justin Heyes-Jones
   
   Simplified for O(1) allocation without used-list overhead.
+
+  NOTE: FixedSizeAllocator is a high-performance, lean pool allocator designed
+  for fast fixed-size block allocation using a singly-linked free list.
+  It does NOT maintain a used-list or invoke destructors (~USER_TYPE) on allocated
+  objects upon its own destruction. Callers are responsible for pairing every alloc()
+  with an explicit free() (and invoking object destructors where applicable) before
+  the allocator is destroyed. Double-freeing an element will corrupt the free list.
 */
 
 #ifndef FSA_H
