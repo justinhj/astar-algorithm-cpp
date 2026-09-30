@@ -21,6 +21,21 @@ Looking for a C# version? Checkout the companion repository [astar-algorithm-csh
 
 ### Release notes
 
+[v1.4.2](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.4.2)
+Bug fixes, memory safety hardening, and RAII cleanup:
+- Fixed a double-free and use-after-free bug occurring when the start state matches the goal state (`start == goal`).
+- Added an RAII destructor (`~AStarSearch`) ensuring all live nodes and user state destructors (`~UserState()`) execute upon scope exit.
+- Explicitly disabled copying (`= delete` on copy constructor and assignment operator) for `AStarSearch` and `FixedSizeAllocator` to eliminate accidental shallow-copy double-frees.
+- Added automatic node cleanup in `SetStartAndGoalStates()` when reusing an `AStarSearch` instance.
+- Documented the `FixedSizeAllocator` contract and guarded against `MaxElements == 0` unsigned underflow.
+- Removed `#if USE_FSA_MEMORY` guard from `EnsureMemoryFreed()` so leak assertions run in both FSA and standard heap modes.
+- Added comprehensive unit tests for `start == goal`, RAII destruction, search reuse, and non-copyable type traits.
+- Updated GitHub Actions CI to run example binaries and upgraded `actions/checkout` to v7.
+
+[v1.4.1](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.4.1)
+- Allocated full node capacity in benchmark to prevent premature node exhaustion with default FSA size.
+- Modernized benchmark script (`run_benchmarks.py`).
+
 [v1.4](https://github.com/justinhj/astar-algorithm-cpp/releases/tag/v1.4)
 Major performance optimizations, memory reduction, and allocator overhaul:
 - Merged open set (`m_OpenSet`) and closed list (`m_ClosedList`) into a single unified `m_NodeMap`, halving hash table lookups and inserts per node expansion.
