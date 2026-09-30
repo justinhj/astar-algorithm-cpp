@@ -553,7 +553,7 @@ class AStarSearch {
     // routine once the search ends
     void FreeUnusedNodes() {
         for (auto n : m_NodeMap) {
-            if (!n->child) {
+            if (n != m_Start && !n->child) {
                 FreeNode(n);
             }
         }

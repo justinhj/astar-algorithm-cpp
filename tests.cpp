@@ -335,4 +335,25 @@ TEST_CASE("Reopen Node From Closed List When Cheaper Path Found") {
     astar.EnsureMemoryFreed();
 }
 
+TEST_CASE("Start Node Equals Goal Node") {
+    AStarSearch<MapSearchNode> astar;
+    MapSearchNode start(1, 1);
+    MapSearchNode goal(1, 1);
+
+    astar.SetStartAndGoalStates(start, goal);
+
+    unsigned int state = astar.SearchStep();
+    CHECK(state == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED);
+
+    MapSearchNode* solStart = astar.GetSolutionStart();
+    REQUIRE(solStart != nullptr);
+    CHECK(solStart->x == 1);
+    CHECK(solStart->y == 1);
+    CHECK(astar.GetSolutionNext() == nullptr);
+    CHECK(astar.GetSolutionCost() == 0.0f);
+
+    astar.FreeSolutionNodes();
+    astar.EnsureMemoryFreed();
+}
+
 
