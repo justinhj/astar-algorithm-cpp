@@ -130,6 +130,14 @@ class AStarSearch {
           m_CurrentExpandingNode(nullptr) {
     }
 
+    ~AStarSearch() {
+        if (m_State == SEARCH_STATE_SUCCEEDED) {
+            FreeSolutionNodes();
+        } else if (m_Start != nullptr) {
+            FreeAllNodes();
+        }
+    }
+
     // call at any time to cancel the search and free up all the memory
     void CancelSearch() {
         m_CancelRequest = true;
