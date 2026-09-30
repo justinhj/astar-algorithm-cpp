@@ -14,7 +14,7 @@ COMMITS = [
 
 ITERATIONS = 1000
 RUNS_PER_COMMIT = 5
-REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUILD_DIR = os.path.join(REPO_DIR, "build")
 
 def run_cmd(cmd, cwd=REPO_DIR):
@@ -25,7 +25,10 @@ def run_cmd(cmd, cwd=REPO_DIR):
     return res.stdout
 
 def get_current_branch():
-    return run_cmd("git rev-parse --abbrev-ref HEAD").strip()
+    branch = run_cmd("git rev-parse --abbrev-ref HEAD").strip()
+    if branch == "HEAD":
+        return "master"
+    return branch
 
 def main():
     original_branch = get_current_branch()
@@ -40,10 +43,11 @@ def main():
             print(f"Testing commit: {commit_hash} - {desc}")
             print("=" * 60)
 
-            # 1. Checkout commit
+            # 1. Clean and checkout commit
+            run_cmd("git checkout -- bench.cpp")
             run_cmd(f"git checkout {commit_hash}")
 
-            # 2. Inject modern bench.cpp (from optimizations-2)
+            # 2. Inject modern bench.cpp
             run_cmd(f"git checkout {original_branch} -- bench.cpp")
 
             # 3. Build release binary
