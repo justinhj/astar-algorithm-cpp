@@ -5,3 +5,4 @@ cpp/minpathbucharest
 cpp/tests
 build/
 build-release
+.DS_Store
