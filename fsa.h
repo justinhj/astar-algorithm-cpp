@@ -35,7 +35,11 @@ class FixedSizeAllocator {
         : m_pFirstFree(nullptr),
           m_MaxElements(MaxElements),
           m_pMemory(nullptr) {
-          
+        assert(MaxElements > 0);
+        if (m_MaxElements == 0) {
+            return;
+        }
+
         char* pMem = new char[m_MaxElements * sizeof(FSA_ELEMENT)];
         m_pMemory = (FSA_ELEMENT*)pMem;
         m_pFirstFree = m_pMemory;
@@ -47,6 +51,9 @@ class FixedSizeAllocator {
         }
         pElement->pNext = nullptr;
     }
+
+    FixedSizeAllocator(const FixedSizeAllocator&) = delete;
+    FixedSizeAllocator& operator=(const FixedSizeAllocator&) = delete;
 
     ~FixedSizeAllocator() {
         if (m_pMemory) {

@@ -130,6 +130,9 @@ class AStarSearch {
           m_CurrentExpandingNode(nullptr) {
     }
 
+    AStarSearch(const AStarSearch&) = delete;
+    AStarSearch& operator=(const AStarSearch&) = delete;
+
     ~AStarSearch() {
         if (m_State == SEARCH_STATE_SUCCEEDED) {
             FreeSolutionNodes();
@@ -145,6 +148,14 @@ class AStarSearch {
 
     // Set Start and goal states
     void SetStartAndGoalStates(UserState& Start, UserState& Goal) {
+        if (m_Start != nullptr) {
+            if (m_State == SEARCH_STATE_SUCCEEDED) {
+                FreeSolutionNodes();
+            } else {
+                FreeAllNodes();
+            }
+        }
+
         m_CancelRequest = false;
 
         m_Start = AllocateNode();
@@ -474,9 +485,7 @@ class AStarSearch {
     }
 
     void EnsureMemoryFreed() {
-#if USE_FSA_MEMORY
         assert(m_AllocateNodeCount == 0);
-#endif
     }
 
    private:  // methods

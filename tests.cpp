@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <memory>
+#include <type_traits>
 
 #include "stlastar.h"
 
@@ -408,6 +409,35 @@ TEST_CASE("AStarSearch Destructor Cleans Up Unfinished Search On Scope Exit") {
         astar.SearchStep();
     }
     CHECK(DestructorTracker::alive_count == 0);
+}
+
+TEST_CASE("SetStartAndGoalStates Cleans Up Previous Search On Reuse") {
+    AStarSearch<MapSearchNode> astar;
+    MapSearchNode start1(0, 0);
+    MapSearchNode goal1(1, 0);
+    astar.SetStartAndGoalStates(start1, goal1);
+    unsigned int state1;
+    do {
+        state1 = astar.SearchStep();
+    } while (state1 == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
+    CHECK(state1 == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED);
+
+    // Reuse without calling FreeSolutionNodes()
+    MapSearchNode start2(1, 1);
+    MapSearchNode goal2(1, 1);
+    astar.SetStartAndGoalStates(start2, goal2);
+    unsigned int state2 = astar.SearchStep();
+    CHECK(state2 == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED);
+
+    astar.FreeSolutionNodes();
+    astar.EnsureMemoryFreed();
+}
+
+TEST_CASE("AStarSearch and FixedSizeAllocator Are Non-Copyable") {
+    CHECK(!std::is_copy_constructible<AStarSearch<MapSearchNode>>::value);
+    CHECK(!std::is_copy_assignable<AStarSearch<MapSearchNode>>::value);
+    CHECK(!std::is_copy_constructible<FixedSizeAllocator<int>>::value);
+    CHECK(!std::is_copy_assignable<FixedSizeAllocator<int>>::value);
 }
 
 
