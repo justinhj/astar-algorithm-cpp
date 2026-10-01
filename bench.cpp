@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <cmath>
@@ -9,13 +10,10 @@
 #include <string>
 #include <vector>
 
-#include "stlastar.h"
+#include <stlastar.h>
 
-// Module-level constants
-const int MAP_WIDTH = 1000;
-const int MAP_HEIGHT = 1000;
-const unsigned int RANDOM_SEED = 12345;
-const unsigned int NUM_SEARCHES = 1000;
+// Module-level configuration
+int g_grid_size = 64;
 const int OBSTACLE_PERCENTAGE = 20;  // 20% obstacles (value 9), 80% passable terrain (value 1)
 
 // The world map
@@ -23,10 +21,10 @@ std::vector<int> world_map;
 
 // Map helper function
 int GetMap(int x, int y) {
-    if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) {
+    if (x < 0 || x >= g_grid_size || y < 0 || y >= g_grid_size) {
         return 9;
     }
-    return world_map[(y * MAP_WIDTH) + x];
+    return world_map[(y * g_grid_size) + x];
 }
 
 // Search node definition for the 2D grid
@@ -105,24 +103,43 @@ float MapSearchNode::GetCost(MapSearchNode& successor) {
 }
 
 int main(int argc, char* argv[]) {
-    unsigned int num_searches = NUM_SEARCHES;
+    int grid_size = 64;
+    unsigned int num_searches = 1000;
+    unsigned int seed = 12345;
+
     if (argc > 1) {
-        num_searches = static_cast<unsigned int>(std::stoul(argv[1]));
+        std::string arg1 = argv[1];
+        if (arg1 == "-h" || arg1 == "--help") {
+            std::cout << "Usage: " << argv[0] << " [grid_size=64] [iterations=1000] [seed=12345]" << std::endl;
+            return 0;
+        }
+        grid_size = std::stoi(arg1);
     }
+    if (argc > 2) {
+        num_searches = static_cast<unsigned int>(std::stoul(argv[2]));
+    }
+    if (argc > 3) {
+        seed = static_cast<unsigned int>(std::stoul(argv[3]));
+    }
+
+    if (grid_size < 1) grid_size = 1;
+    if (num_searches < 1) num_searches = 1;
+
+    g_grid_size = grid_size;
 
     std::cout << "========================================" << std::endl;
     std::cout << "A* Search Benchmark" << std::endl;
-    std::cout << "Grid size:          " << MAP_WIDTH << " x " << MAP_HEIGHT << std::endl;
-    std::cout << "Random seed:        " << RANDOM_SEED << std::endl;
+    std::cout << "Grid size:          " << grid_size << " x " << grid_size << std::endl;
+    std::cout << "Random seed:        " << seed << std::endl;
     std::cout << "Obstacle ratio:     " << OBSTACLE_PERCENTAGE << "%" << std::endl;
     std::cout << "Number of searches: " << num_searches << std::endl;
     std::cout << "========================================" << std::endl;
 
     // 1. Generate grid using fixed seed for reproducible maps
-    std::mt19937 rng(RANDOM_SEED);
+    std::mt19937 rng(seed);
 
-    world_map.resize(MAP_WIDTH * MAP_HEIGHT);
-    for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; ++i) {
+    world_map.resize(grid_size * grid_size);
+    for (int i = 0; i < grid_size * grid_size; ++i) {
         world_map[i] = ((rng() % 100) < static_cast<unsigned int>(OBSTACLE_PERCENTAGE)) ? 9 : 1;
     }
 
@@ -130,7 +147,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Running benchmark..." << std::endl;
 
     // 2. Perform searches
-    AStarSearch<MapSearchNode> astarsearch((MAP_WIDTH * MAP_HEIGHT) + 1);
+    AStarSearch<MapSearchNode> astarsearch((grid_size * grid_size) + 1);
 
     unsigned int successes = 0;
     unsigned int failures = 0;
@@ -142,14 +159,14 @@ int main(int argc, char* argv[]) {
     for (unsigned int i = 0; i < num_searches; ++i) {
         MapSearchNode nodeStart;
         do {
-            nodeStart.x = static_cast<int>(rng() % MAP_WIDTH);
-            nodeStart.y = static_cast<int>(rng() % MAP_HEIGHT);
+            nodeStart.x = static_cast<int>(rng() % grid_size);
+            nodeStart.y = static_cast<int>(rng() % grid_size);
         } while (GetMap(nodeStart.x, nodeStart.y) >= 9);
 
         MapSearchNode nodeEnd;
         do {
-            nodeEnd.x = static_cast<int>(rng() % MAP_WIDTH);
-            nodeEnd.y = static_cast<int>(rng() % MAP_HEIGHT);
+            nodeEnd.x = static_cast<int>(rng() % grid_size);
+            nodeEnd.y = static_cast<int>(rng() % grid_size);
         } while (GetMap(nodeEnd.x, nodeEnd.y) >= 9);
 
         astarsearch.SetStartAndGoalStates(nodeStart, nodeEnd);

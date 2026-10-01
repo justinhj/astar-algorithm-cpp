@@ -6,3 +6,7 @@ cpp/tests
 build/
 build-release
 .DS_Store
+CMakeCache.txt
+CMakeFiles/
+_deps/
+compile_commands.json

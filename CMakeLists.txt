@@ -32,6 +32,19 @@ target_link_libraries(minpathbucharest stlastar)
 add_executable(bench bench.cpp)
 target_link_libraries(bench stlastar)
 
+# Historical benchmark targets
+function(add_historical_bench target_name header_dir)
+    add_executable(${target_name} bench.cpp)
+    target_include_directories(${target_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${header_dir})
+endfunction()
+
+add_historical_bench(bench_baseline bench/64bdb20_baseline)
+add_historical_bench(bench_step1 bench/7424a4c_step1)
+add_historical_bench(bench_step2 bench/3ee685b_step2)
+add_historical_bench(bench_step3 bench/a37013f_step3)
+
+add_custom_target(bench_all DEPENDS bench bench_baseline bench_step1 bench_step2 bench_step3)
+
 enable_testing()
 add_executable(tests tests.cpp)
 
