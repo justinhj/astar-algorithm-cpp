@@ -24,7 +24,8 @@ The project uses CMake to configure and build.
     *   `8puzzle`: Solves the 8-puzzle sliding tile game.
     *   `findpath`: Finds a path on a simple grid map.
     *   `minpathbucharest`: Solves the "classic" AI problem of finding the shortest path to Bucharest.
-    *   `bench`: Runs the 1,000,000-search grid benchmark.
+    *   `bench`: Runs the grid benchmark.
+    *   `mazebench`: Runs the maze benchmark on an ASCII maze file.
     *   `tests`: Runs the unit tests.
 
 *   **Run Tests:**
@@ -48,6 +49,14 @@ The project uses CMake to configure and build.
 *   **Pathfinder:**
     ```bash
     ./findpath
+    ```
+*   **Maze Benchmark:**
+    ```bash
+    # Run benchmark on a saved maze file (e.g. from bench/mazes/)
+    ./build/mazebench bench/mazes/maze_s32_seed12345_prim_b0.30.txt 1000 12345
+
+    # Or run automated suite across sizes with Prim's algorithm & braid:
+    python3 bench/run_maze_benchmarks.py -s 16,32,64,128,256 -i 1000 -r 3
     ```
 
 ## Development Conventions

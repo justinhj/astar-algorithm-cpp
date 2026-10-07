@@ -10,3 +10,7 @@ CMakeCache.txt
 CMakeFiles/
 _deps/
 compile_commands.json
+bench/mazes/
+bench/mazegen.py
+results*.txt
+.agents/
