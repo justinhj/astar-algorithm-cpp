@@ -3,9 +3,16 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <algorithm>
+#include <cmath>
 #include <iostream>
+#include <limits>
 #include <memory>
+#include <queue>
+#include <random>
 #include <type_traits>
+#include <utility>
+#include <vector>
 
 #include "stlastar.h"
 
@@ -438,6 +445,244 @@ TEST_CASE("AStarSearch and FixedSizeAllocator Are Non-Copyable") {
     CHECK(!std::is_copy_assignable<AStarSearch<MapSearchNode>>::value);
     CHECK(!std::is_copy_constructible<FixedSizeAllocator<int>>::value);
     CHECK(!std::is_copy_assignable<FixedSizeAllocator<int>>::value);
+}
+
+namespace {
+
+struct WeightedEdge {
+    int to;
+    float cost;
+};
+
+struct WeightedNode {
+    float x;
+    float y;
+    std::vector<WeightedEdge> edges;
+};
+
+struct WeightedGraph {
+    std::vector<WeightedNode> nodes;
+
+    float Euclidean(int u, int v) const {
+        float dx = nodes[u].x - nodes[v].x;
+        float dy = nodes[u].y - nodes[v].y;
+        return std::sqrt(dx * dx + dy * dy);
+    }
+
+    float EdgeCost(int u, int v) const {
+        for (size_t i = 0; i < nodes[u].edges.size(); ++i) {
+            if (nodes[u].edges[i].to == v) {
+                return nodes[u].edges[i].cost;
+            }
+        }
+        return std::numeric_limits<float>::max();
+    }
+
+    bool HasEdge(int u, int v) const {
+        for (size_t i = 0; i < nodes[u].edges.size(); ++i) {
+            if (nodes[u].edges[i].to == v) return true;
+        }
+        return false;
+    }
+
+    void AddUndirectedEdge(int u, int v, float weight_factor) {
+        if (u == v || HasEdge(u, v)) return;
+        float cost = Euclidean(u, v) * weight_factor;
+        nodes[u].edges.push_back(WeightedEdge{v, cost});
+        nodes[v].edges.push_back(WeightedEdge{u, cost});
+    }
+};
+
+WeightedGraph GenerateConnectedWeightedGraph(int num_nodes, uint32_t seed) {
+    WeightedGraph g;
+    g.nodes.resize(num_nodes);
+    std::mt19937 rng(seed);
+    std::uniform_real_distribution<float> pos_dist(0.0f, 1000.0f);
+    std::uniform_real_distribution<float> weight_dist(1.0f, 4.2f);
+
+    for (int i = 0; i < num_nodes; ++i) {
+        g.nodes[i].x = pos_dist(rng);
+        g.nodes[i].y = pos_dist(rng);
+    }
+
+    // Connect each node to its nearest neighbors, then bridge components so it is fully connected
+    for (int u = 0; u < num_nodes; ++u) {
+        std::vector<std::pair<float, int> > nearest;
+        nearest.reserve(num_nodes - 1);
+        for (int v = 0; v < num_nodes; ++v) {
+            if (u == v) continue;
+            nearest.push_back(std::make_pair(g.Euclidean(u, v), v));
+        }
+        std::sort(nearest.begin(), nearest.end());
+        int degree = std::min(4, static_cast<int>(nearest.size()));
+        for (int k = 0; k < degree; ++k) {
+            g.AddUndirectedEdge(u, nearest[k].second, weight_dist(rng));
+        }
+    }
+
+    while (true) {
+        std::vector<bool> vis(num_nodes, false);
+        std::queue<int> q;
+        vis[0] = true;
+        q.push(0);
+        int seen = 0;
+        while (!q.empty()) {
+            int cur = q.front();
+            q.pop();
+            ++seen;
+            for (size_t i = 0; i < g.nodes[cur].edges.size(); ++i) {
+                int nb = g.nodes[cur].edges[i].to;
+                if (!vis[nb]) {
+                    vis[nb] = true;
+                    q.push(nb);
+                }
+            }
+        }
+        if (seen == num_nodes) break;
+
+        int best_u = -1;
+        int best_v = -1;
+        float best_d = std::numeric_limits<float>::max();
+        for (int u = 0; u < num_nodes; ++u) {
+            if (!vis[u]) continue;
+            for (int v = 0; v < num_nodes; ++v) {
+                if (vis[v]) continue;
+                float d = g.Euclidean(u, v);
+                if (d < best_d) {
+                    best_d = d;
+                    best_u = u;
+                    best_v = v;
+                }
+            }
+        }
+        g.AddUndirectedEdge(best_u, best_v, weight_dist(rng));
+    }
+
+    return g;
+}
+
+float DijkstraShortestPathCost(const WeightedGraph& g, int start, int goal) {
+    const int n = static_cast<int>(g.nodes.size());
+    std::vector<float> dist(n, std::numeric_limits<float>::max());
+    typedef std::pair<float, int> QueueItem;
+    std::priority_queue<QueueItem, std::vector<QueueItem>, std::greater<QueueItem> > pq;
+
+    dist[start] = 0.0f;
+    pq.push(std::make_pair(0.0f, start));
+
+    while (!pq.empty()) {
+        QueueItem top = pq.top();
+        pq.pop();
+        float d = top.first;
+        int u = top.second;
+        if (d > dist[u]) continue;
+        if (u == goal) return d;
+
+        for (size_t i = 0; i < g.nodes[u].edges.size(); ++i) {
+            const WeightedEdge& e = g.nodes[u].edges[i];
+            float nd = d + e.cost;
+            if (nd < dist[e.to]) {
+                dist[e.to] = nd;
+                pq.push(std::make_pair(nd, e.to));
+            }
+        }
+    }
+    return std::numeric_limits<float>::max();
+}
+
+struct WeightedGraphSearchNode {
+    int id;
+    static const WeightedGraph* s_Graph;
+
+    WeightedGraphSearchNode() : id(0) {}
+    explicit WeightedGraphSearchNode(int node_id) : id(node_id) {}
+
+    float GoalDistanceEstimate(WeightedGraphSearchNode& nodeGoal) {
+        return s_Graph->Euclidean(id, nodeGoal.id);
+    }
+
+    bool IsGoal(WeightedGraphSearchNode& nodeGoal) {
+        return id == nodeGoal.id;
+    }
+
+    bool GetSuccessors(AStarSearch<WeightedGraphSearchNode>* astarsearch,
+                       WeightedGraphSearchNode* parent_node) {
+        int parent_id = parent_node ? parent_node->id : -1;
+        const std::vector<WeightedEdge>& edges = s_Graph->nodes[id].edges;
+        for (size_t i = 0; i < edges.size(); ++i) {
+            if (edges[i].to == parent_id) continue;
+            WeightedGraphSearchNode succ(edges[i].to);
+            if (!astarsearch->AddSuccessor(succ)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    float GetCost(WeightedGraphSearchNode& successor) {
+        return s_Graph->EdgeCost(id, successor.id);
+    }
+
+    bool IsSameState(WeightedGraphSearchNode& rhs) {
+        return id == rhs.id;
+    }
+
+    size_t Hash() {
+        return std::hash<int>()(id);
+    }
+};
+
+const WeightedGraph* WeightedGraphSearchNode::s_Graph = nullptr;
+
+}  // namespace
+
+TEST_CASE("Weighted Graph Matches Dijkstra Oracle") {
+    const int sizes[] = {16, 48, 120};
+    const uint32_t seeds[] = {101u, 2029u, 99991u};
+
+    for (size_t si = 0; si < sizeof(sizes) / sizeof(sizes[0]); ++si) {
+        int num_nodes = sizes[si];
+        for (size_t ki = 0; ki < sizeof(seeds) / sizeof(seeds[0]); ++ki) {
+            uint32_t seed = seeds[ki] + static_cast<uint32_t>(num_nodes);
+            WeightedGraph graph = GenerateConnectedWeightedGraph(num_nodes, seed);
+            WeightedGraphSearchNode::s_Graph = &graph;
+
+            int start_id = 0;
+            int goal_id = num_nodes - 1;
+            float expected_cost = DijkstraShortestPathCost(graph, start_id, goal_id);
+
+            AStarSearch<WeightedGraphSearchNode> astar(2048);
+            WeightedGraphSearchNode start(start_id);
+            WeightedGraphSearchNode goal(goal_id);
+            astar.SetStartAndGoalStates(start, goal);
+
+            unsigned int state;
+            do {
+                state = astar.SearchStep();
+            } while (state == AStarSearch<WeightedGraphSearchNode>::SEARCH_STATE_SEARCHING);
+
+            REQUIRE(state == AStarSearch<WeightedGraphSearchNode>::SEARCH_STATE_SUCCEEDED);
+            CHECK(astar.GetSolutionCost() == doctest::Approx(expected_cost).epsilon(0.001));
+
+            // Walk solution path and verify edge validity and summed cost
+            WeightedGraphSearchNode* cur = astar.GetSolutionStart();
+            REQUIRE(cur != nullptr);
+            CHECK(cur->id == start_id);
+
+            float walked_cost = 0.0f;
+            int prev_id = cur->id;
+            while (WeightedGraphSearchNode* next = astar.GetSolutionNext()) {
+                REQUIRE(graph.HasEdge(prev_id, next->id));
+                walked_cost += graph.EdgeCost(prev_id, next->id);
+                prev_id = next->id;
+            }
+            CHECK(prev_id == goal_id);
+            CHECK(walked_cost == doctest::Approx(expected_cost).epsilon(0.001));
+
+            astar.FreeSolutionNodes();
+            astar.EnsureMemoryFreed();
+        }
+    }
 }
 
 
